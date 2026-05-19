@@ -10,6 +10,7 @@ import {
   upsertSubscriptionTxn,
 } from "@/lib/db";
 import { getPlan } from "@/lib/data";
+import { validateCard } from "@/lib/payments";
 
 export type SubscribeFormState = { error?: string };
 
@@ -44,6 +45,40 @@ export async function subscribeAction(
         error: `You've used ${used} drink${used === 1 ? "" : "s"} on ${currentPlan?.name ?? "your current plan"} this month — downgrade available on the 1st of next month.`,
       };
     }
+  }
+
+  if (!currentSub) {
+    redirect(`/plans/${newPlan.id}/payment`);
+  }
+
+  upsertSubscriptionTxn(user.id, newPlan.id);
+  revalidatePath("/account");
+  revalidatePath("/plans");
+  redirect("/account?subscribed=1");
+}
+
+export async function confirmSubscriptionPaymentAction(
+  planId: string,
+  _prev: SubscribeFormState,
+  formData: FormData
+): Promise<SubscribeFormState> {
+  const user = await getCurrentUser();
+  if (!user) {
+    redirect(`/login?next=/plans/${planId}/payment`);
+  }
+
+  const newPlan = getPlan(planId);
+  if (!newPlan) {
+    redirect("/plans");
+  }
+
+  if (getActiveSubscription(user.id)) {
+    redirect("/account?subscribed=1");
+  }
+
+  const card = validateCard(formData);
+  if (!card.ok) {
+    return { error: card.error };
   }
 
   upsertSubscriptionTxn(user.id, newPlan.id);

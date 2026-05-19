@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Logo from "./logo";
+import type { CurrentUser } from "@/lib/auth";
 
 const columns = [
   {
@@ -28,7 +29,7 @@ const columns = [
   },
 ];
 
-export default function Footer() {
+export default function Footer({ user }: { user: CurrentUser | null }) {
   return (
     <footer className="border-t border-border bg-surface">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
@@ -40,7 +41,7 @@ export default function Footer() {
               and juices, conveniently available through smart vending machines.
             </p>
           </div>
-          {columns.map((col) => (
+          {columns.filter((column) => !(user != null && column.title === "Account")).map((col) => (
             <div key={col.title}>
               <h3 className="text-sm font-semibold text-foreground">
                 {col.title}

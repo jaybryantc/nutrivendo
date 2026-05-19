@@ -91,14 +91,14 @@ export default function ContactPage() {
               <Card>
                 <h3 className="font-semibold">Headquarters</h3>
                 <p className="mt-2 text-sm text-muted">
-                  340 Brannan Street
+                  340 King Street West
                   <br />
-                  San Francisco, CA 94107
+                  Toronto, ON M5V 1J9
                 </p>
               </Card>
               <Card>
                 <h3 className="font-semibold">Support hours</h3>
-                <p className="mt-2 text-sm text-muted">Mon–Fri, 8am–6pm PT</p>
+                <p className="mt-2 text-sm text-muted">Mon–Fri, 8am–6pm ET</p>
               </Card>
             </div>
           </div>

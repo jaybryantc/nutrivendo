@@ -4,7 +4,7 @@ const milestones = [
   {
     year: "2021",
     title: "Two coolers in one gym",
-    body: "Founders Jess and Marco placed the first prototype in a Mission District gym after months of blending in their kitchen.",
+    body: "Founders Jess and Marco placed the first prototype in a Kensington Market gym after months of blending in their kitchen.",
   },
   {
     year: "2022",
@@ -13,8 +13,8 @@ const milestones = [
   },
   {
     year: "2024",
-    title: "Across the Bay",
-    body: "50+ machines across SF, Oakland, Berkeley, and Stanford. Same recipe ethos: real ingredients, no shortcuts.",
+    title: "Coast to coast",
+    body: "50+ machines across Toronto, Vancouver, Montréal, Calgary, and Ottawa. Same recipe ethos: real ingredients, no shortcuts.",
   },
   {
     year: "2026",
@@ -64,7 +64,7 @@ export default function AboutPage() {
               {
                 title: "Local and growing",
                 body:
-                  "We work with Bay Area growers and roasters. Our menus rotate with what's actually in season.",
+                  "We work with Canadian growers and roasters. Our menus rotate with what's actually in season.",
               },
             ].map((v) => (
               <Card key={v.title}>
@@ -81,7 +81,7 @@ export default function AboutPage() {
           <div className="max-w-2xl">
             <Eyebrow>Our story</Eyebrow>
             <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-              From two coolers to the Bay Area.
+              From two coolers to coast to coast.
             </h2>
           </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

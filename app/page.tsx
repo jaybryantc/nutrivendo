@@ -16,15 +16,14 @@ import StickyMobileCTA from "@/components/sticky-mobile-cta";
 import { getCurrentUser } from "@/lib/auth";
 import { getActiveSubscription, getPlanUsageThisMonth } from "@/lib/db";
 
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?auto=format&fit=crop&w=1200&q=80";
+const HERO_IMAGE = "/nutrivendo-concept-machine.jpeg";
 
 const PARTNERS = [
-  "FitLife",
-  "UC Berkeley",
-  "Stanford",
-  "Mission Bay Biotech",
-  "Oakland 12th St BART",
+  "FitLife King West",
+  "UBC",
+  "University of Calgary",
+  "Kanata North Tech",
+  "Berri-UQAM Métro",
 ] as const;
 
 export default async function HomePage() {
@@ -123,7 +122,7 @@ export default async function HomePage() {
                 <div className="relative overflow-hidden rounded-[2rem] border border-border bg-white shadow-2xl shadow-brand-900/10 aspect-[4/5]">
                   <Image
                     src={HERO_IMAGE}
-                    alt="A vibrant tropical NutriVendo smoothie"
+                    alt="A NutriVendo smart vending machine"
                     fill
                     priority
                     sizes="(min-width: 1024px) 520px, 100vw"
@@ -145,7 +144,7 @@ export default async function HomePage() {
                     6 machines live nearby
                   </div>
 
-                  <div className="absolute -bottom-5 left-5 right-5 sm:right-auto sm:w-64 rounded-2xl border border-border bg-white p-4 shadow-xl">
+                  <div className="absolute bottom-5 left-5 right-5 sm:right-auto sm:w-64 rounded-2xl border border-border bg-white p-4 shadow-xl">
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <p className="text-[11px] font-medium uppercase tracking-wide text-brand-700">
@@ -457,7 +456,7 @@ export default async function HomePage() {
                   >
                     <path d="M12 2c3.5 4.8 6 8.4 6 12a6 6 0 1 1-12 0c0-3.6 2.5-7.2 6-12z" />
                   </svg>
-                  50+ locations · Bay Area
+                  50+ locations · Across Canada
                 </div>
               </div>
             </Reveal>

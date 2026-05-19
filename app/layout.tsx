@@ -55,7 +55,7 @@ export default async function RootLayout({
           <main id="main" className="flex-1">
             {children}
           </main>
-          <Footer />
+          <Footer user={user} />
         </CartProvider>
       </body>
     </html>
