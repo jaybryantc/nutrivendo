@@ -31,9 +31,9 @@ export default async function HomePage() {
   const pickOfTheDay = featured[0];
 
   const user = await getCurrentUser();
-  const sub = user ? getActiveSubscription(user.id) : null;
+  const sub = user ? await getActiveSubscription(user.id) : null;
   const subPlan = sub ? getPlan(sub.plan_id) : null;
-  const used = user && subPlan ? getPlanUsageThisMonth(user.id) : 0;
+  const used = user && subPlan ? await getPlanUsageThisMonth(user.id) : 0;
   const remaining = subPlan ? Math.max(0, subPlan.monthlyQuota - used) : 0;
 
   return (

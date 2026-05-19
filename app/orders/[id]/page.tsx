@@ -25,10 +25,10 @@ export default async function OrderDetailPage({
   const { id } = await params;
   const { placed } = await searchParams;
 
-  const order = getOrderById(id);
+  const order = await getOrderById(id);
   if (!order || order.user_id !== user.id) notFound();
 
-  const items = getOrderItems(order.id);
+  const items = await getOrderItems(order.id);
   const location = locations.find((l) => l.id === order.location_id);
   const date = new Date(order.created_at);
   const qrSvg = await qrToSvg(order.pickup_code);
@@ -38,7 +38,7 @@ export default async function OrderDetailPage({
     // Resolve the plan name from the user's currently active subscription
     // (best-effort — order's subscription_id ties back to a SubscriptionRow
     // but we don't expose its plan_id directly here without an extra query).
-    const sub = getActiveSubscription(user.id);
+    const sub = await getActiveSubscription(user.id);
     const planMeta = sub ? getPlan(sub.plan_id) : null;
     paymentLabel = planMeta ? `${planMeta.name} plan` : "Plan";
   } else if (order.card_last4) {

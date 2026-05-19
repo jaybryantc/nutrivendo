@@ -1,85 +1,22 @@
-import Database from "better-sqlite3";
-import fs from "node:fs";
-import path from "node:path";
+import "server-only";
+import { createClient, type Client, type InValue } from "@libsql/client";
 
-const DB_DIR = path.join(process.cwd(), "data");
-const DB_PATH = path.join(DB_DIR, "nutrivendo.db");
-
-type GlobalWithDb = typeof globalThis & { __nv_db?: Database.Database };
-
-function ensureColumn(
-  database: Database.Database,
-  table: string,
-  column: string,
-  ddl: string
-) {
-  const info = database
-    .prepare(`PRAGMA table_info(${table})`)
-    .all() as { name: string }[];
-  if (!info.some((c) => c.name === column)) {
-    database.exec(`ALTER TABLE ${table} ADD COLUMN ${ddl}`);
+function createDbClient(): Client {
+  const url = process.env.TURSO_DATABASE_URL;
+  if (!url) {
+    throw new Error(
+      "TURSO_DATABASE_URL is missing. Set it in .env.local (e.g. file:./data/nutrivendo.db) or in your hosting environment."
+    );
   }
+  return createClient({
+    url,
+    authToken: process.env.TURSO_AUTH_TOKEN,
+  });
 }
 
-function createDb(): Database.Database {
-  if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
-
-  const db = new Database(DB_PATH);
-  db.pragma("journal_mode = WAL");
-  db.pragma("foreign_keys = ON");
-
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS users (
-      id            TEXT PRIMARY KEY,
-      email         TEXT UNIQUE NOT NULL,
-      password_hash TEXT NOT NULL,
-      first_name    TEXT NOT NULL,
-      last_name     TEXT NOT NULL,
-      created_at    TEXT NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS orders (
-      id              TEXT PRIMARY KEY,
-      user_id         TEXT NOT NULL REFERENCES users(id),
-      location_id     TEXT NOT NULL,
-      pickup_code     TEXT NOT NULL,
-      subtotal_cents  INTEGER NOT NULL,
-      status          TEXT NOT NULL,
-      created_at      TEXT NOT NULL
-    );
-    CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id, created_at DESC);
-
-    CREATE TABLE IF NOT EXISTS order_items (
-      id               INTEGER PRIMARY KEY AUTOINCREMENT,
-      order_id         TEXT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
-      product_id       TEXT NOT NULL,
-      product_name     TEXT NOT NULL,
-      unit_price_cents INTEGER NOT NULL,
-      quantity         INTEGER NOT NULL
-    );
-    CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
-
-    CREATE TABLE IF NOT EXISTS subscriptions (
-      id           TEXT PRIMARY KEY,
-      user_id      TEXT NOT NULL REFERENCES users(id),
-      plan_id      TEXT NOT NULL,
-      status       TEXT NOT NULL,
-      started_at   TEXT NOT NULL,
-      cancelled_at TEXT
-    );
-    CREATE INDEX IF NOT EXISTS idx_subs_user_status ON subscriptions(user_id, status);
-  `);
-
-  // Idempotent column adds for the payment/subscription wiring.
-  ensureColumn(db, "orders", "paid_with", "paid_with TEXT NOT NULL DEFAULT 'card'");
-  ensureColumn(db, "orders", "card_last4", "card_last4 TEXT");
-  ensureColumn(db, "orders", "subscription_id", "subscription_id TEXT");
-
-  return db;
-}
-
+type GlobalWithDb = typeof globalThis & { __nv_libsql?: Client };
 const g = globalThis as GlobalWithDb;
-export const db: Database.Database = g.__nv_db ?? (g.__nv_db = createDb());
+export const db: Client = g.__nv_libsql ?? (g.__nv_libsql = createDbClient());
 
 // ---------- Row types ----------
 
@@ -135,70 +72,80 @@ export function getMonthStartIso(now: Date = new Date()): string {
 
 // ---------- Query helpers ----------
 
-export function getUserByEmail(email: string): UserRow | undefined {
-  return db
-    .prepare<[string], UserRow>("SELECT * FROM users WHERE email = ?")
-    .get(email.toLowerCase());
+export async function getUserByEmail(email: string): Promise<UserRow | undefined> {
+  const { rows } = await db.execute({
+    sql: "SELECT * FROM users WHERE email = ?",
+    args: [email.toLowerCase()],
+  });
+  return rows[0] as unknown as UserRow | undefined;
 }
 
-export function getUserById(id: string): UserRow | undefined {
-  return db
-    .prepare<[string], UserRow>("SELECT * FROM users WHERE id = ?")
-    .get(id);
+export async function getUserById(id: string): Promise<UserRow | undefined> {
+  const { rows } = await db.execute({
+    sql: "SELECT * FROM users WHERE id = ?",
+    args: [id],
+  });
+  return rows[0] as unknown as UserRow | undefined;
 }
 
-export function createUser(input: {
+export async function createUser(input: {
   id: string;
   email: string;
   password_hash: string;
   first_name: string;
   last_name: string;
-}): void {
-  db.prepare(
-    `INSERT INTO users (id, email, password_hash, first_name, last_name, created_at)
-     VALUES (@id, @email, @password_hash, @first_name, @last_name, @created_at)`
-  ).run({
-    ...input,
-    email: input.email.toLowerCase(),
-    created_at: new Date().toISOString(),
+}): Promise<void> {
+  await db.execute({
+    sql: `INSERT INTO users (id, email, password_hash, first_name, last_name, created_at)
+          VALUES (?, ?, ?, ?, ?, ?)`,
+    args: [
+      input.id,
+      input.email.toLowerCase(),
+      input.password_hash,
+      input.first_name,
+      input.last_name,
+      new Date().toISOString(),
+    ],
   });
 }
 
-export function getOrdersForUser(userId: string): OrderRow[] {
-  return db
-    .prepare<[string], OrderRow>(
-      "SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC"
-    )
-    .all(userId);
+export async function getOrdersForUser(userId: string): Promise<OrderRow[]> {
+  const { rows } = await db.execute({
+    sql: "SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC",
+    args: [userId],
+  });
+  return rows as unknown as OrderRow[];
 }
 
-export function getOrderById(orderId: string): OrderRow | undefined {
-  return db
-    .prepare<[string], OrderRow>("SELECT * FROM orders WHERE id = ?")
-    .get(orderId);
+export async function getOrderById(orderId: string): Promise<OrderRow | undefined> {
+  const { rows } = await db.execute({
+    sql: "SELECT * FROM orders WHERE id = ?",
+    args: [orderId],
+  });
+  return rows[0] as unknown as OrderRow | undefined;
 }
 
-export function getOrderItems(orderId: string): OrderItemRow[] {
-  return db
-    .prepare<[string], OrderItemRow>(
-      "SELECT * FROM order_items WHERE order_id = ? ORDER BY id ASC"
-    )
-    .all(orderId);
+export async function getOrderItems(orderId: string): Promise<OrderItemRow[]> {
+  const { rows } = await db.execute({
+    sql: "SELECT * FROM order_items WHERE order_id = ? ORDER BY id ASC",
+    args: [orderId],
+  });
+  return rows as unknown as OrderItemRow[];
 }
 
-export function getPlanUsageThisMonth(userId: string): number {
+export async function getPlanUsageThisMonth(userId: string): Promise<number> {
   const start = getMonthStartIso();
-  const row = db
-    .prepare<[string, string], { total: number | null }>(
-      `SELECT COALESCE(SUM(oi.quantity), 0) AS total
-       FROM order_items oi
-       JOIN orders o ON o.id = oi.order_id
-       WHERE o.user_id = ?
-         AND o.paid_with = 'plan'
-         AND o.created_at >= ?`
-    )
-    .get(userId, start);
-  return row?.total ?? 0;
+  const { rows } = await db.execute({
+    sql: `SELECT COALESCE(SUM(oi.quantity), 0) AS total
+          FROM order_items oi
+          JOIN orders o ON o.id = oi.order_id
+          WHERE o.user_id = ?
+            AND o.paid_with = 'plan'
+            AND o.created_at >= ?`,
+    args: [userId, start],
+  });
+  const total = rows[0]?.total;
+  return typeof total === "number" ? total : Number(total ?? 0);
 }
 
 export type InsertOrderInput = {
@@ -214,60 +161,82 @@ export type InsertOrderInput = {
   subscription_id: string | null;
 };
 
-export const insertOrderTxn = db.transaction(
-  (
-    order: InsertOrderInput,
-    items: Array<Omit<OrderItemRow, "id" | "order_id">>
-  ) => {
-    db.prepare(
-      `INSERT INTO orders (
-         id, user_id, location_id, pickup_code, subtotal_cents, status, created_at,
-         paid_with, card_last4, subscription_id
-       ) VALUES (
-         @id, @user_id, @location_id, @pickup_code, @subtotal_cents, @status, @created_at,
-         @paid_with, @card_last4, @subscription_id
-       )`
-    ).run(order);
-
-    const itemStmt = db.prepare(
-      `INSERT INTO order_items (order_id, product_id, product_name, unit_price_cents, quantity)
-       VALUES (?, ?, ?, ?, ?)`
-    );
-    for (const i of items) {
-      itemStmt.run(
-        order.id,
-        i.product_id,
-        i.product_name,
-        i.unit_price_cents,
-        i.quantity
-      );
-    }
-  }
-);
-
-export function getActiveSubscription(userId: string): SubscriptionRow | undefined {
-  return db
-    .prepare<[string], SubscriptionRow>(
-      "SELECT * FROM subscriptions WHERE user_id = ? AND status = 'active' ORDER BY started_at DESC LIMIT 1"
-    )
-    .get(userId);
+export async function insertOrderTxn(
+  order: InsertOrderInput,
+  items: Array<Omit<OrderItemRow, "id" | "order_id">>
+): Promise<void> {
+  await db.batch(
+    [
+      {
+        sql: `INSERT INTO orders (
+                id, user_id, location_id, pickup_code, subtotal_cents, status, created_at,
+                paid_with, card_last4, subscription_id
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        args: [
+          order.id,
+          order.user_id,
+          order.location_id,
+          order.pickup_code,
+          order.subtotal_cents,
+          order.status,
+          order.created_at,
+          order.paid_with,
+          order.card_last4,
+          order.subscription_id,
+        ] satisfies InValue[],
+      },
+      ...items.map((i) => ({
+        sql: `INSERT INTO order_items (order_id, product_id, product_name, unit_price_cents, quantity)
+              VALUES (?, ?, ?, ?, ?)`,
+        args: [
+          order.id,
+          i.product_id,
+          i.product_name,
+          i.unit_price_cents,
+          i.quantity,
+        ] satisfies InValue[],
+      })),
+    ],
+    "write"
+  );
 }
 
-export const upsertSubscriptionTxn = db.transaction(
-  (userId: string, planId: string) => {
-    const now = new Date().toISOString();
-    db.prepare(
-      `UPDATE subscriptions SET status = 'cancelled', cancelled_at = ? WHERE user_id = ? AND status = 'active'`
-    ).run(now, userId);
-    db.prepare(
-      `INSERT INTO subscriptions (id, user_id, plan_id, status, started_at, cancelled_at)
-       VALUES (?, ?, ?, 'active', ?, NULL)`
-    ).run(crypto.randomUUID(), userId, planId, now);
-  }
-);
+export async function getActiveSubscription(
+  userId: string
+): Promise<SubscriptionRow | undefined> {
+  const { rows } = await db.execute({
+    sql: "SELECT * FROM subscriptions WHERE user_id = ? AND status = 'active' ORDER BY started_at DESC LIMIT 1",
+    args: [userId],
+  });
+  return rows[0] as unknown as SubscriptionRow | undefined;
+}
 
-export function cancelActiveSubscription(userId: string): void {
-  db.prepare(
-    `UPDATE subscriptions SET status = 'cancelled', cancelled_at = ? WHERE user_id = ? AND status = 'active'`
-  ).run(new Date().toISOString(), userId);
+export async function upsertSubscriptionTxn(
+  userId: string,
+  planId: string
+): Promise<void> {
+  const now = new Date().toISOString();
+  await db.batch(
+    [
+      {
+        sql: `UPDATE subscriptions SET status = 'cancelled', cancelled_at = ?
+              WHERE user_id = ? AND status = 'active'`,
+        args: [now, userId],
+      },
+      {
+        sql: `INSERT INTO subscriptions (id, user_id, plan_id, status, started_at, cancelled_at)
+              VALUES (?, ?, ?, 'active', ?, NULL)`,
+        args: [crypto.randomUUID(), userId, planId, now],
+      },
+    ],
+    "write"
+  );
+}
+
+export async function cancelActiveSubscription(userId: string): Promise<void> {
+  await db.execute({
+    sql: `UPDATE subscriptions SET status = 'cancelled', cancelled_at = ?
+          WHERE user_id = ? AND status = 'active'`,
+    args: [new Date().toISOString(), userId],
+  });
 }

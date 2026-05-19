@@ -78,7 +78,7 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   if (!token) return null;
   const userId = await verifySession(token);
   if (!userId) return null;
-  const row = getUserById(userId);
+  const row = await getUserById(userId);
   if (!row) return null;
   return {
     id: row.id,

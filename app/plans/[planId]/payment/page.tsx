@@ -19,7 +19,7 @@ export default async function SubscriptionPaymentPage({
   const user = await getCurrentUser();
   if (!user) redirect(`/login?next=/plans/${planId}/payment`);
 
-  if (getActiveSubscription(user.id)) {
+  if (await getActiveSubscription(user.id)) {
     redirect("/plans");
   }
 

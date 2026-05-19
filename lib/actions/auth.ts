@@ -40,13 +40,13 @@ export async function registerAction(
     return { error: "Password must be at least 8 characters." };
   }
 
-  if (getUserByEmail(email)) {
+  if (await getUserByEmail(email)) {
     return { error: "An account with that email already exists." };
   }
 
   const password_hash = await hashPassword(password);
   const id = crypto.randomUUID();
-  createUser({ id, email, password_hash, first_name: firstName, last_name: lastName });
+  await createUser({ id, email, password_hash, first_name: firstName, last_name: lastName });
 
   await setSessionCookie(id);
   revalidatePath("/", "layout");
@@ -65,7 +65,7 @@ export async function loginAction(
     return { error: "Enter your email and password." };
   }
 
-  const user = getUserByEmail(email);
+  const user = await getUserByEmail(email);
   if (!user || !(await verifyPassword(password, user.password_hash))) {
     return { error: "Invalid email or password." };
   }

@@ -11,7 +11,12 @@ export default async function OrdersPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login?next=/orders");
 
-  const orders = getOrdersForUser(user.id);
+  const orders = await getOrdersForUser(user.id);
+  const itemCounts = await Promise.all(
+    orders.map(async (o) =>
+      (await getOrderItems(o.id)).reduce((s, i) => s + i.quantity, 0)
+    )
+  );
 
   if (orders.length === 0) {
     return (
@@ -44,10 +49,9 @@ export default async function OrdersPage() {
         </h1>
 
         <div className="mt-10 space-y-4">
-          {orders.map((o) => {
-            const items = getOrderItems(o.id);
+          {orders.map((o, idx) => {
             const location = locations.find((l) => l.id === o.location_id);
-            const itemCount = items.reduce((s, i) => s + i.quantity, 0);
+            const itemCount = itemCounts[idx];
             const date = new Date(o.created_at);
             return (
               <Link

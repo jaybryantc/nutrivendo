@@ -112,14 +112,14 @@ export async function placeOrderAction(
   let subscription_id: string | null = null;
 
   if (paymentMethod === "plan") {
-    const sub = getActiveSubscription(user.id);
+    const sub = await getActiveSubscription(user.id);
     const planMeta = sub ? getPlan(sub.plan_id) : null;
     if (!sub || !planMeta || sub.status !== "active") {
       return {
         error: "You don't have an active plan. Please pay by card.",
       };
     }
-    const used = getPlanUsageThisMonth(user.id);
+    const used = await getPlanUsageThisMonth(user.id);
     const remaining = planMeta.monthlyQuota - used;
     if (cartCount > remaining) {
       return {
@@ -139,7 +139,7 @@ export async function placeOrderAction(
   }
 
   const orderId = crypto.randomUUID();
-  insertOrderTxn(
+  await insertOrderTxn(
     {
       id: orderId,
       user_id: user.id,

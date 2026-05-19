@@ -11,9 +11,9 @@ export default async function CheckoutPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login?next=/checkout");
 
-  const sub = getActiveSubscription(user.id);
+  const sub = await getActiveSubscription(user.id);
   const planMeta = sub ? getPlan(sub.plan_id) : null;
-  const used = sub ? getPlanUsageThisMonth(user.id) : 0;
+  const used = sub ? await getPlanUsageThisMonth(user.id) : 0;
   const remaining = planMeta ? Math.max(0, planMeta.monthlyQuota - used) : 0;
 
   return (

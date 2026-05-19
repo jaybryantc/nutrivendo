@@ -29,7 +29,7 @@ export async function subscribeAction(
     return { error: "That plan doesn't exist." };
   }
 
-  const currentSub = getActiveSubscription(user.id);
+  const currentSub = await getActiveSubscription(user.id);
   const currentPlan = currentSub ? getPlan(currentSub.plan_id) : null;
   const currentTier = currentPlan?.tier ?? 0;
 
@@ -39,7 +39,7 @@ export async function subscribeAction(
   }
 
   if (newPlan.tier < currentTier) {
-    const used = getPlanUsageThisMonth(user.id);
+    const used = await getPlanUsageThisMonth(user.id);
     if (used > 0) {
       return {
         error: `You've used ${used} drink${used === 1 ? "" : "s"} on ${currentPlan?.name ?? "your current plan"} this month — downgrade available on the 1st of next month.`,
@@ -51,7 +51,7 @@ export async function subscribeAction(
     redirect(`/plans/${newPlan.id}/payment`);
   }
 
-  upsertSubscriptionTxn(user.id, newPlan.id);
+  await upsertSubscriptionTxn(user.id, newPlan.id);
   revalidatePath("/account");
   revalidatePath("/plans");
   redirect("/account?subscribed=1");
@@ -72,7 +72,7 @@ export async function confirmSubscriptionPaymentAction(
     redirect("/plans");
   }
 
-  if (getActiveSubscription(user.id)) {
+  if (await getActiveSubscription(user.id)) {
     redirect("/account?subscribed=1");
   }
 
@@ -81,7 +81,7 @@ export async function confirmSubscriptionPaymentAction(
     return { error: card.error };
   }
 
-  upsertSubscriptionTxn(user.id, newPlan.id);
+  await upsertSubscriptionTxn(user.id, newPlan.id);
   revalidatePath("/account");
   revalidatePath("/plans");
   redirect("/account?subscribed=1");
@@ -92,7 +92,7 @@ export async function cancelSubscriptionAction(): Promise<void> {
   if (!user) {
     redirect("/login?next=/account");
   }
-  cancelActiveSubscription(user.id);
+  await cancelActiveSubscription(user.id);
   revalidatePath("/account");
   revalidatePath("/plans");
   redirect("/account?cancelled=1");

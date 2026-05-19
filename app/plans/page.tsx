@@ -33,9 +33,9 @@ function getNextResetLabel(now: Date = new Date()): string {
 
 export default async function PlansPage() {
   const user = await getCurrentUser();
-  const activeSub = user ? getActiveSubscription(user.id) : null;
+  const activeSub = user ? await getActiveSubscription(user.id) : null;
   const currentPlan = activeSub ? getPlan(activeSub.plan_id) : null;
-  const used = user ? getPlanUsageThisMonth(user.id) : 0;
+  const used = user ? await getPlanUsageThisMonth(user.id) : 0;
   const currentTier = currentPlan?.tier ?? 0;
 
   return (

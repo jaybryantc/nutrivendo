@@ -31,11 +31,11 @@ export default async function AccountPage({
   const user = await getCurrentUser();
   if (!user) redirect("/login?next=/account");
 
-  const sub = getActiveSubscription(user.id);
-  const orders = getOrdersForUser(user.id);
+  const sub = await getActiveSubscription(user.id);
+  const orders = await getOrdersForUser(user.id);
   const params = await searchParams;
   const plan = sub ? getPlan(sub.plan_id) : null;
-  const used = sub ? getPlanUsageThisMonth(user.id) : 0;
+  const used = sub ? await getPlanUsageThisMonth(user.id) : 0;
   const usagePct =
     plan && !isUnlimited(plan.monthlyQuota)
       ? Math.min(100, Math.round((used / plan.monthlyQuota) * 100))
