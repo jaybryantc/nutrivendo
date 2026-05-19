@@ -1,0 +1,98 @@
+import Link from "next/link";
+import { Container, Section, Eyebrow, Card } from "@/components/ui";
+import { getCurrentUser } from "@/lib/auth";
+import { getOrderItems, getOrdersForUser } from "@/lib/db";
+import { locations } from "@/lib/data";
+import { redirect } from "next/navigation";
+
+export const metadata = { title: "My orders" };
+
+export default async function OrdersPage() {
+  const user = await getCurrentUser();
+  if (!user) redirect("/login?next=/orders");
+
+  const orders = getOrdersForUser(user.id);
+
+  if (orders.length === 0) {
+    return (
+      <Section>
+        <Container>
+          <Eyebrow>My orders</Eyebrow>
+          <h1 className="mt-4 text-4xl font-semibold tracking-tight">
+            No orders yet.
+          </h1>
+          <p className="mt-4 text-muted max-w-xl">
+            Once you place an order, it'll show up here with the pickup code.
+          </p>
+          <Link
+            href="/menu"
+            className="mt-8 inline-flex h-11 items-center rounded-full bg-brand-500 px-5 text-sm font-medium text-white hover:bg-brand-600"
+          >
+            Browse the menu
+          </Link>
+        </Container>
+      </Section>
+    );
+  }
+
+  return (
+    <Section>
+      <Container>
+        <Eyebrow>My orders</Eyebrow>
+        <h1 className="mt-4 text-4xl font-semibold tracking-tight">
+          Your order history
+        </h1>
+
+        <div className="mt-10 space-y-4">
+          {orders.map((o) => {
+            const items = getOrderItems(o.id);
+            const location = locations.find((l) => l.id === o.location_id);
+            const itemCount = items.reduce((s, i) => s + i.quantity, 0);
+            const date = new Date(o.created_at);
+            return (
+              <Link
+                key={o.id}
+                href={`/orders/${o.id}`}
+                className="block"
+              >
+                <Card className="transition-shadow hover:shadow-md">
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-wide text-brand-700">
+                        Pickup code · {o.pickup_code}
+                      </p>
+                      <p className="mt-1 font-semibold">
+                        {location?.name ?? o.location_id}
+                      </p>
+                      <p className="text-sm text-muted">
+                        {date.toLocaleDateString(undefined, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}{" "}
+                        ·{" "}
+                        {date.toLocaleTimeString(undefined, {
+                          hour: "numeric",
+                          minute: "2-digit",
+                        })}{" "}
+                        · {itemCount} item{itemCount === 1 ? "" : "s"}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-semibold">
+                        ${(o.subtotal_cents / 100).toFixed(2)}
+                      </p>
+                      <span className="mt-1 inline-flex rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-medium text-brand-700 capitalize">
+                        {o.status}
+                      </span>
+                    </div>
+                  </div>
+                </Card>
+              </Link>
+            );
+          })}
+        </div>
+      </Container>
+    </Section>
+  );
+}
