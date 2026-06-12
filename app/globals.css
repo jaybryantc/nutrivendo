@@ -69,6 +69,22 @@ body {
   outline-color: var(--brand-500);
 }
 
+/* Gentle floating motion for decorative hero ingredients. */
+@keyframes nv-float {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0) rotate(var(--nv-rot, 0deg));
+  }
+  50% {
+    transform: translateY(-26px) translateX(6px)
+      rotate(calc(var(--nv-rot, 0deg) + 12deg));
+  }
+}
+.nv-float {
+  animation: nv-float 6s ease-in-out infinite;
+  will-change: transform;
+}
+
 /* Honor user motion preferences. */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -51,6 +51,8 @@ export type OrderItemRow = {
   product_name: string;
   unit_price_cents: number;
   quantity: number;
+  /** JSON string of [{ name, price }] for selected add-ons, or null. */
+  addons: string | null;
 };
 
 export type SubscriptionRow = {
@@ -186,14 +188,15 @@ export async function insertOrderTxn(
         ] satisfies InValue[],
       },
       ...items.map((i) => ({
-        sql: `INSERT INTO order_items (order_id, product_id, product_name, unit_price_cents, quantity)
-              VALUES (?, ?, ?, ?, ?)`,
+        sql: `INSERT INTO order_items (order_id, product_id, product_name, unit_price_cents, quantity, addons)
+              VALUES (?, ?, ?, ?, ?, ?)`,
         args: [
           order.id,
           i.product_id,
           i.product_name,
           i.unit_price_cents,
           i.quantity,
+          i.addons,
         ] satisfies InValue[],
       })),
     ],

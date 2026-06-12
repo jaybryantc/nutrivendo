@@ -2,8 +2,14 @@
 
 import { useActionState, useMemo, useState } from "react";
 import { Card, Input, Label } from "@/components/ui";
-import { useCart } from "@/components/cart-provider";
-import { locations, products, isUnlimited } from "@/lib/data";
+import { useCart, lineKey } from "@/components/cart-provider";
+import {
+  locations,
+  products,
+  isUnlimited,
+  getAddOn,
+  sumAddOns,
+} from "@/lib/data";
 import { placeOrderAction, type CheckoutFormState } from "@/lib/actions/orders";
 
 type PlanContext = {
@@ -27,7 +33,14 @@ export default function CheckoutForm({ plan }: { plan: PlanContext }) {
     [lines]
   );
 
-  const planCanCover = !!plan && plan.remaining >= cartCount && cartCount > 0;
+  // Add-ons aren't covered by a plan — an order with any add-on is card-only.
+  const hasAddOns = useMemo(
+    () => lines.some((l) => l.addOnIds.length > 0),
+    [lines]
+  );
+
+  const planCanCover =
+    !!plan && plan.remaining >= cartCount && cartCount > 0 && !hasAddOns;
   const [paymentMethod, setPaymentMethod] = useState<"plan" | "card">(
     planCanCover ? "plan" : "card"
   );
@@ -71,11 +84,13 @@ export default function CheckoutForm({ plan }: { plan: PlanContext }) {
           <h2 className="text-lg font-semibold">Payment method</h2>
           <p className="mt-1 text-sm text-muted">
             {plan
-              ? planCanCover
-                ? `Your ${plan.name} plan has ${plan.remaining} drink${plan.remaining === 1 ? "" : "s"} left this month.`
-                : plan.remaining > 0
-                  ? `Your cart exceeds your remaining ${plan.remaining} drink${plan.remaining === 1 ? "" : "s"} on ${plan.name} — please pay by card.`
-                  : `Your ${plan.name} plan has no drinks left this month — please pay by card.`
+              ? hasAddOns
+                ? "Add-ons aren't covered by your plan — please pay by card."
+                : planCanCover
+                  ? `Your ${plan.name} plan has ${plan.remaining} drink${plan.remaining === 1 ? "" : "s"} left this month.`
+                  : plan.remaining > 0
+                    ? `Your cart exceeds your remaining ${plan.remaining} drink${plan.remaining === 1 ? "" : "s"} on ${plan.name} — please pay by card.`
+                    : `Your ${plan.name} plan has no drinks left this month — please pay by card.`
               : "No active plan, so card it is."}
           </p>
 
@@ -263,17 +278,27 @@ export default function CheckoutForm({ plan }: { plan: PlanContext }) {
           {lines.map((line) => {
             const product = products.find((p) => p.id === line.productId);
             if (!product) return null;
+            const key = lineKey(line.productId, line.addOnIds);
+            const unitPrice = product.price + sumAddOns(line.addOnIds);
+            const addOnNames = line.addOnIds
+              .map((id) => getAddOn(id)?.name)
+              .filter(Boolean)
+              .join(", ");
             return (
-              <li
-                key={line.productId}
-                className="flex items-center justify-between gap-3"
-              >
-                <span className="truncate">
-                  {product.name}{" "}
-                  <span className="text-muted">× {line.quantity}</span>
+              <li key={key} className="flex items-start justify-between gap-3">
+                <span className="min-w-0">
+                  <span className="truncate">
+                    {product.name}{" "}
+                    <span className="text-muted">× {line.quantity}</span>
+                  </span>
+                  {addOnNames && (
+                    <span className="block text-xs text-muted">
+                      + {addOnNames}
+                    </span>
+                  )}
                 </span>
                 <span className="font-medium">
-                  ${(product.price * line.quantity).toFixed(2)}
+                  ${(unitPrice * line.quantity).toFixed(2)}
                 </span>
               </li>
             );

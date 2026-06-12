@@ -87,18 +87,30 @@ const ordersColumns: Array<{ name: string; ddl: string }> = [
   { name: "subscription_id", ddl: "subscription_id TEXT" },
 ];
 
+const orderItemsColumns: Array<{ name: string; ddl: string }> = [
+  { name: "addons", ddl: "addons TEXT" },
+];
+
+async function addMissingColumns(
+  table: string,
+  columns: Array<{ name: string; ddl: string }>
+) {
+  const info = await client.execute(`PRAGMA table_info(${table})`);
+  const existing = new Set(info.rows.map((r) => String(r.name)));
+  for (const col of columns) {
+    if (!existing.has(col.name)) {
+      await client.execute(`ALTER TABLE ${table} ADD COLUMN ${col.ddl}`);
+    }
+  }
+}
+
 async function run() {
   for (const sql of statements) {
     await client.execute(sql);
   }
 
-  const info = await client.execute("PRAGMA table_info(orders)");
-  const existing = new Set(info.rows.map((r) => String(r.name)));
-  for (const col of ordersColumns) {
-    if (!existing.has(col.name)) {
-      await client.execute(`ALTER TABLE orders ADD COLUMN ${col.ddl}`);
-    }
-  }
+  await addMissingColumns("orders", ordersColumns);
+  await addMissingColumns("order_items", orderItemsColumns);
 
   console.log(`Migrated against ${url}`);
 }

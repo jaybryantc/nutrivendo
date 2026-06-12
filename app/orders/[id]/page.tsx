@@ -9,6 +9,25 @@ import { getActiveSubscription } from "@/lib/db";
 
 export const metadata = { title: "Order detail" };
 
+/** Render the stored add-ons JSON (`[{ name, price }]`) as a comma list. */
+function parseAddOnNames(addons: string | null): string {
+  if (!addons) return "";
+  try {
+    const parsed: unknown = JSON.parse(addons);
+    if (!Array.isArray(parsed)) return "";
+    return parsed
+      .map((a) =>
+        a && typeof a === "object" && typeof (a as { name?: unknown }).name === "string"
+          ? (a as { name: string }).name
+          : null
+      )
+      .filter(Boolean)
+      .join(", ");
+  } catch {
+    return "";
+  }
+}
+
 export default async function OrderDetailPage({
   params,
   searchParams,
@@ -97,20 +116,28 @@ export default async function OrderDetailPage({
           <Card>
             <h2 className="font-semibold">Items</h2>
             <ul className="mt-4 space-y-2 text-sm">
-              {items.map((i) => (
-                <li
-                  key={i.id}
-                  className="flex items-center justify-between gap-3"
-                >
-                  <span>
-                    {i.product_name}{" "}
-                    <span className="text-muted">× {i.quantity}</span>
-                  </span>
-                  <span className="font-medium">
-                    ${((i.unit_price_cents * i.quantity) / 100).toFixed(2)}
-                  </span>
-                </li>
-              ))}
+              {items.map((i) => {
+                const addOnNames = parseAddOnNames(i.addons);
+                return (
+                  <li
+                    key={i.id}
+                    className="flex items-start justify-between gap-3"
+                  >
+                    <span className="min-w-0">
+                      {i.product_name}{" "}
+                      <span className="text-muted">× {i.quantity}</span>
+                      {addOnNames && (
+                        <span className="block text-xs text-muted">
+                          + {addOnNames}
+                        </span>
+                      )}
+                    </span>
+                    <span className="font-medium">
+                      ${((i.unit_price_cents * i.quantity) / 100).toFixed(2)}
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
             <dl className="mt-5 space-y-2 border-t border-border pt-4 text-sm">
               <div className="flex justify-between">

@@ -88,12 +88,12 @@ export default function LocationsMapInner({
   onMarkerClick?: (id: string) => void;
   fitBounds?: boolean;
 }) {
-  const center = useMemo<[number, number]>(() => [51.0, -96.0], []);
+  const center = useMemo<[number, number]>(() => [43.6532, -79.3832], []);
 
   return (
     <MapContainer
       center={center}
-      zoom={4}
+      zoom={12}
       scrollWheelZoom={false}
       className="h-full w-full"
     >

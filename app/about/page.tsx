@@ -13,8 +13,8 @@ const milestones = [
   },
   {
     year: "2024",
-    title: "Coast to coast",
-    body: "50+ machines across Toronto, Vancouver, Montréal, Calgary, and Ottawa. Same recipe ethos: real ingredients, no shortcuts.",
+    title: "Across the city",
+    body: "4 machines across Toronto — from gyms to transit hubs to campus. Same recipe ethos: real ingredients, no shortcuts.",
   },
   {
     year: "2026",
@@ -81,7 +81,7 @@ export default function AboutPage() {
           <div className="max-w-2xl">
             <Eyebrow>Our story</Eyebrow>
             <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-              From two coolers to coast to coast.
+              From two coolers to across Toronto.
             </h2>
           </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

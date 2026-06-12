@@ -8,7 +8,7 @@ import {
   getPlanUsageThisMonth,
   insertOrderTxn,
 } from "@/lib/db";
-import { getPlan, locations, products } from "@/lib/data";
+import { getPlan, locations, products, getAddOn, sumAddOns } from "@/lib/data";
 import { validateCard } from "@/lib/payments";
 
 export type CheckoutFormState = { error?: string };
@@ -26,7 +26,17 @@ function toCents(dollars: number): number {
   return Math.round(dollars * 100);
 }
 
-type CartLine = { productId: string; quantity: number };
+type CartLine = { productId: string; quantity: number; addOnIds: string[] };
+
+/** Keep only known add-on ids, de-duplicated. Server never trusts client prices. */
+function parseAddOnIds(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  const seen = new Set<string>();
+  for (const v of raw) {
+    if (typeof v === "string" && getAddOn(v)) seen.add(v);
+  }
+  return [...seen];
+}
 
 function parseCart(raw: FormDataEntryValue | null): CartLine[] {
   if (typeof raw !== "string" || !raw) return [];
@@ -51,6 +61,9 @@ function parseCart(raw: FormDataEntryValue | null): CartLine[] {
           lines.push({
             productId: (entry as { productId: string }).productId,
             quantity: q,
+            addOnIds: parseAddOnIds(
+              (entry as { addOnIds?: unknown }).addOnIds
+            ),
           });
         }
       }
@@ -88,11 +101,22 @@ export async function placeOrderAction(
     .map((line) => {
       const product = products.find((p) => p.id === line.productId);
       if (!product) return null;
+      const selectedAddOns = line.addOnIds
+        .map((id) => getAddOn(id))
+        .filter((a): a is NonNullable<typeof a> => a != null);
       return {
         product_id: product.id,
         product_name: product.name,
-        unit_price_cents: toCents(product.price),
+        // Add-on surcharge is baked into the unit price so all downstream
+        // subtotal math and order-detail display stay correct.
+        unit_price_cents: toCents(product.price + sumAddOns(line.addOnIds)),
         quantity: line.quantity,
+        addons:
+          selectedAddOns.length > 0
+            ? JSON.stringify(
+                selectedAddOns.map((a) => ({ name: a.name, price: a.price }))
+              )
+            : null,
       };
     })
     .filter((x): x is NonNullable<typeof x> => x !== null);
@@ -112,6 +136,12 @@ export async function placeOrderAction(
   let subscription_id: string | null = null;
 
   if (paymentMethod === "plan") {
+    // Add-ons aren't covered by a plan — such orders must be paid by card.
+    if (cartLines.some((l) => l.addOnIds.length > 0)) {
+      return {
+        error: "Add-ons aren't covered by your plan. Please pay by card.",
+      };
+    }
     const sub = await getActiveSubscription(user.id);
     const planMeta = sub ? getPlan(sub.plan_id) : null;
     if (!sub || !planMeta || sub.status !== "active") {

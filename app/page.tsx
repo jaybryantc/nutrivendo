@@ -11,23 +11,21 @@ import {
 } from "@/lib/data";
 import LocationsMap from "@/components/locations-map";
 import Reveal from "@/components/reveal";
-import AnimatedStat from "@/components/animated-stat";
 import StickyMobileCTA from "@/components/sticky-mobile-cta";
 import { getCurrentUser } from "@/lib/auth";
 import { getActiveSubscription, getPlanUsageThisMonth } from "@/lib/db";
 
-const HERO_IMAGE = "/nutrivendo-concept-machine.jpeg";
+const HERO_IMAGE = "/nutrivendo-cafe-machine.jpeg";
 
 const PARTNERS = [
   "FitLife King West",
-  "UBC",
-  "University of Calgary",
-  "Kanata North Tech",
-  "Berri-UQAM Métro",
+  "Bay Street Tower",
+  "Union Station",
+  "U of T Athletic Centre",
 ] as const;
 
 export default async function HomePage() {
-  const featured = products.slice(0, 3);
+  const featured = products.filter((p) => p.bestseller);
   const pickOfTheDay = featured[0];
 
   const user = await getCurrentUser();
@@ -49,6 +47,37 @@ export default async function HomePage() {
           className="pointer-events-none absolute top-40 -right-24 h-80 w-80 rounded-full bg-brand-300/30 blur-3xl"
         />
 
+        {/* Floating fresh-ingredient leaves */}
+        {[
+          { className: "left-[5%] top-[16%] h-14 w-14 text-brand-400/85", delay: "0s", rot: "-12deg", dur: "6s", mobile: true },
+          { className: "left-[43%] top-[8%] h-10 w-10 text-brand-300/75", delay: "1.2s", rot: "20deg", dur: "7s", mobile: false },
+          { className: "right-[38%] bottom-[12%] h-12 w-12 text-brand-500/70", delay: "0.6s", rot: "8deg", dur: "5.5s", mobile: false },
+          { className: "left-[8%] bottom-[14%] h-16 w-16 text-brand-300/70", delay: "2.1s", rot: "-24deg", dur: "6.5s", mobile: true },
+          { className: "right-[5%] top-[22%] h-11 w-11 text-brand-400/80", delay: "1.6s", rot: "16deg", dur: "7.5s", mobile: false },
+          { className: "left-[50%] bottom-[6%] h-9 w-9 text-brand-500/60", delay: "0.3s", rot: "-6deg", dur: "5s", mobile: false },
+          { className: "right-[14%] bottom-[28%] h-12 w-12 text-brand-400/65", delay: "2.6s", rot: "30deg", dur: "6.8s", mobile: false },
+          { className: "left-[26%] top-[6%] h-10 w-10 text-brand-500/55", delay: "0.9s", rot: "-18deg", dur: "8s", mobile: false },
+        ].map((leaf, i) => (
+          <svg
+            key={i}
+            aria-hidden
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            style={
+              {
+                animationDelay: leaf.delay,
+                animationDuration: leaf.dur,
+                "--nv-rot": leaf.rot,
+              } as React.CSSProperties
+            }
+            className={`nv-float pointer-events-none absolute drop-shadow-sm ${
+              leaf.mobile ? "block" : "hidden sm:block"
+            } ${leaf.className}`}
+          >
+            <path d="M21 3c-9 0-16 5-16 13 0 1.7.4 3.2 1.1 4.5C9 16 13 12.5 18 11c-4 2.3-7 5.6-8.6 9.6 1.1.5 2.3.8 3.6.8 8 0 13-7 13-16V3z" />
+          </svg>
+        ))}
+
         <Container className="relative py-20 sm:py-28 lg:py-32">
           <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
             <Reveal>
@@ -66,29 +95,26 @@ export default async function HomePage() {
                   )}
                 </div>
               ) : (
-                <Eyebrow>Smart vending. Real ingredients.</Eyebrow>
+                <Eyebrow>Fresh nutrition. Instantly.</Eyebrow>
               )}
               <h1 className="mt-5 text-5xl font-semibold tracking-[-0.02em] text-foreground sm:text-6xl lg:text-7xl leading-[1.02]">
-                Healthy drinks,
+                Fresh Nutrition in
                 <span className="block">
-                  on tap{" "}
-                  <span className="text-brand-600">everywhere</span> you go.
+                  <span className="text-brand-600">60 Seconds.</span>
                 </span>
               </h1>
               <p className="mt-6 text-lg sm:text-xl text-muted max-w-xl leading-relaxed">
-                Skip the line. Skip the sugar. NutriVendo machines blend, pour,
-                and serve fresh drinks from real ingredients — where you live,
-                work, and train.
+                NutriVendo delivers fresh, customizable healthy drinks instantly
+                through smart vending technology.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Link
-                  href="/menu"
+                  href="/locations"
                   className="focus-ring inline-flex h-12 items-center rounded-full bg-brand-600 px-6 text-base font-medium text-white shadow-sm shadow-brand-600/30 hover:bg-brand-700 hover:shadow-md transition-all"
                 >
-                  Browse the menu
                   <svg
-                    viewBox="0 0 20 20"
-                    className="ml-1.5 h-4 w-4"
+                    viewBox="0 0 24 24"
+                    className="mr-2 h-4 w-4"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
@@ -97,23 +123,93 @@ export default async function HomePage() {
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      d="M7 5l6 5-6 5"
+                      d="M12 21s-6-5.2-6-10a6 6 0 1 1 12 0c0 4.8-6 10-6 10z"
                     />
+                    <circle cx="12" cy="11" r="2.2" />
                   </svg>
+                  Find a Machine
                 </Link>
                 <Link
-                  href="/locations"
+                  href="/menu"
                   className="focus-ring inline-flex h-12 items-center rounded-full border border-border bg-white px-6 text-base font-medium text-foreground hover:bg-surface hover:border-brand-200 transition-colors"
                 >
-                  Find a machine
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="mr-2 h-4 w-4 text-brand-600"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    aria-hidden
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 8h12l-1 11a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 8z"
+                    />
+                    <path strokeLinecap="round" d="M9 8V6a3 3 0 0 1 6 0v2" />
+                  </svg>
+                  Explore Menu
                 </Link>
               </div>
-              <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-muted">
-                <AnimatedStat value={60} suffix="s" label="from tap to sip" />
-                <span aria-hidden className="hidden sm:block h-8 w-px bg-border" />
-                <AnimatedStat value={0} suffix="g" label="added sugar options" />
-                <span aria-hidden className="hidden sm:block h-8 w-px bg-border" />
-                <AnimatedStat value={50} suffix="+" label="locations & growing" />
+              <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4 text-sm">
+                {[
+                  {
+                    label: ["Made Fresh", "Instantly"],
+                    icon: (
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M21 3c-9 0-16 5-16 13 0 1.7.4 3.2 1.1 4.5M5 20.5C9 16 13 12.5 18 11"
+                      />
+                    ),
+                  },
+                  {
+                    label: ["Customizable", "Your Way"],
+                    icon: (
+                      <>
+                        <path strokeLinecap="round" d="M4 7h10M18 7h2M4 17h2M10 17h10" />
+                        <circle cx="16" cy="7" r="2" />
+                        <circle cx="8" cy="17" r="2" />
+                      </>
+                    ),
+                  },
+                  {
+                    label: ["Ready in", "60 Seconds"],
+                    icon: (
+                      <>
+                        <circle cx="12" cy="13" r="8" />
+                        <path strokeLinecap="round" d="M12 9v4l2.5 2.5M9 2h6" />
+                      </>
+                    ),
+                  },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    {i > 0 && (
+                      <span
+                        aria-hidden
+                        className="hidden sm:block h-8 w-px bg-border -ml-2 mr-1"
+                      />
+                    )}
+                    <span className="inline-flex h-9 w-9 flex-none items-center justify-center rounded-full bg-brand-50 text-brand-600">
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="h-5 w-5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        aria-hidden
+                      >
+                        {item.icon}
+                      </svg>
+                    </span>
+                    <span className="font-medium leading-tight text-foreground">
+                      {item.label[0]}
+                      <span className="block text-muted font-normal">
+                        {item.label[1]}
+                      </span>
+                    </span>
+                  </div>
+                ))}
               </div>
             </Reveal>
 
@@ -122,7 +218,7 @@ export default async function HomePage() {
                 <div className="relative overflow-hidden rounded-[2rem] border border-border bg-white shadow-2xl shadow-brand-900/10 aspect-[4/5]">
                   <Image
                     src={HERO_IMAGE}
-                    alt="A NutriVendo smart vending machine"
+                    alt="A NutriVendo smart vending machine in a cafe"
                     fill
                     priority
                     sizes="(min-width: 1024px) 520px, 100vw"
@@ -456,7 +552,7 @@ export default async function HomePage() {
                   >
                     <path d="M12 2c3.5 4.8 6 8.4 6 12a6 6 0 1 1-12 0c0-3.6 2.5-7.2 6-12z" />
                   </svg>
-                  50+ locations · Across Canada
+                  4 locations · Toronto
                 </div>
               </div>
             </Reveal>
