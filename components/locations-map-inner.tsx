@@ -16,14 +16,14 @@ const pinSvg = (color: string) =>
   `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="28" height="28"><path fill="${color}" d="M12 2c3.5 4.8 6 8.4 6 12a6 6 0 1 1-12 0c0-3.6 2.5-7.2 6-12z"/></svg>`;
 
 const baseIcon = L.divIcon({
-  html: pinSvg("#10b981"),
+  html: pinSvg("#4ca50d"),
   className: "nv-pin",
   iconSize: [28, 28],
   iconAnchor: [14, 26],
   popupAnchor: [0, -22],
 });
 const activeIcon = L.divIcon({
-  html: pinSvg("#047857"),
+  html: pinSvg("#216b00"),
   className: "nv-pin nv-pin-active",
   iconSize: [34, 34],
   iconAnchor: [17, 30],
@@ -118,7 +118,7 @@ export default function LocationsMapInner({
                   fontWeight: 600,
                   textTransform: "uppercase",
                   letterSpacing: "0.05em",
-                  color: "#047857",
+                  color: "#216b00",
                   margin: 0,
                 }}
               >
@@ -148,7 +148,7 @@ export default function LocationsMapInner({
                   marginTop: 8,
                   fontSize: 12,
                   fontWeight: 600,
-                  color: "#047857",
+                  color: "#216b00",
                 }}
               >
                 Get directions →

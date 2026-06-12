@@ -4,22 +4,22 @@
 :root {
   --background: #ffffff;
   --foreground: #0f1a14;
-  --brand-50: #ecfdf5;
-  --brand-100: #d1fae5;
-  --brand-200: #a7f3d0;
-  --brand-300: #6ee7b7;
-  --brand-400: #34d399;
-  --brand-500: #10b981;
-  --brand-600: #059669;
-  --brand-700: #047857;
-  --brand-800: #065f46;
-  --brand-900: #064e3b;
+  --brand-50: #f2fbe9;
+  --brand-100: #e1f5cb;
+  --brand-200: #c4ea9b;
+  --brand-300: #9fd962;
+  --brand-400: #76c531;
+  --brand-500: #4ca50d;
+  --brand-600: #2b8700;
+  --brand-700: #216b00;
+  --brand-800: #1a5400;
+  --brand-900: #143f00;
   --accent-50: #fff7ed;
   --accent-100: #ffedd5;
   --accent-500: #f97316;
   --accent-600: #ea580c;
   --accent-700: #c2410c;
-  --surface: #f7faf7;
+  --surface: #f7faf2;
   --muted: #6b7280;
   --border: #e5e7eb;
 }
@@ -85,6 +85,54 @@ body {
   will-change: transform;
 }
 
+/* Calmer motion for grounded ingredients resting near the machine base. */
+@keyframes nv-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--nv-rot, 0deg));
+  }
+  50% {
+    transform: translateY(-7px) rotate(calc(var(--nv-rot, 0deg) + 2deg));
+  }
+}
+.nv-bob {
+  animation: nv-bob 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Continuous marquee for the partner strip on small screens.
+   The track holds two identical copies, so translating by -50% loops seamlessly. */
+@keyframes nv-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.nv-marquee {
+  animation: nv-marquee 18s linear infinite;
+  will-change: transform;
+}
+
+/* Soft fade at the marquee edges. */
+.nv-marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+}
+
 /* Honor user motion preferences. */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -106,7 +154,7 @@ body {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.18));
 }
 .nv-pin-active {
-  filter: drop-shadow(0 4px 8px rgba(4, 120, 87, 0.35));
+  filter: drop-shadow(0 4px 8px rgba(33, 107, 0, 0.35));
 }
 .leaflet-container {
   font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;

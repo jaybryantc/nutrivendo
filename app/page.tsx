@@ -15,7 +15,34 @@ import StickyMobileCTA from "@/components/sticky-mobile-cta";
 import { getCurrentUser } from "@/lib/auth";
 import { getActiveSubscription, getPlanUsageThisMonth } from "@/lib/db";
 
-const HERO_IMAGE = "/nutrivendo-cafe-machine.jpeg";
+const HERO_IMAGE = "/nutrivendo-smart-machine.jpeg";
+
+// Scattered fresh-ingredient cutouts around the hero. Mirrors the reference:
+// a few soft leaves floating up top, with fruit + spinach grounded in two
+// clusters around the machine base. `front` lifts a piece above the machine
+// image, `bob` uses the calmer grounded motion, `mobile` keeps it on phones.
+const HERO_DECOR = [
+  // Leaves only, balanced around the open margins — clear of the machine
+  // (x ~52%–86%) and the headline/CTA text on the left.
+
+  // ── Evenly spaced leaves along the top edge ──
+  { src: "/deco-leaf.png", w: 176, h: 351, className: "left-[4%] top-[2%] w-[28px] sm:w-[46px] opacity-90", rot: "-18deg", delay: "0s", dur: "7s", front: false, bob: false, mobile: true },
+  { src: "/deco-leaf.png", w: 176, h: 351, className: "left-[25%] top-[5%] w-[26px] sm:w-[36px] opacity-75", rot: "14deg", delay: "1.8s", dur: "8.2s", front: false, bob: false, mobile: false },
+  { src: "/deco-mint.png", w: 388, h: 281, className: "left-[47%] top-[3%] w-[34px] sm:w-[46px] opacity-85", rot: "16deg", delay: "1.1s", dur: "7.6s", front: false, bob: false, mobile: false },
+  { src: "/deco-leaf.png", w: 176, h: 351, className: "left-[68%] top-[5%] w-[30px] sm:w-[42px] opacity-85", rot: "-12deg", delay: "1.0s", dur: "7.5s", front: false, bob: false, mobile: false },
+
+  // ── One more floating leaf in the top-right ──
+  { src: "/deco-leaf.png", w: 176, h: 351, className: "right-[8%] top-[5%] w-[30px] sm:w-[42px] opacity-85", rot: "-14deg", delay: "0.4s", dur: "7.1s", front: false, bob: false, mobile: false },
+
+  // ── Leaves down the left margin ──
+  { src: "/deco-leaf.png", w: 176, h: 351, className: "left-[3%] top-[30%] w-[30px] sm:w-[40px] opacity-85", rot: "28deg", delay: "1.4s", dur: "7.8s", front: false, bob: false, mobile: false },
+  { src: "/deco-leaf.png", w: 176, h: 351, className: "left-[4%] top-[64%] w-[26px] sm:w-[36px] opacity-80", rot: "-16deg", delay: "0.7s", dur: "7.3s", front: false, bob: false, mobile: false },
+
+  // ── Leaves down the right margin, beside the machine ──
+  { src: "/deco-leaf.png", w: 176, h: 351, className: "right-[3%] top-[22%] w-[32px] sm:w-[44px] opacity-85", rot: "18deg", delay: "0.6s", dur: "7.2s", front: false, bob: false, mobile: false },
+  { src: "/deco-leaf.png", w: 176, h: 351, className: "right-[2%] top-[54%] w-[28px] sm:w-[38px] opacity-80", rot: "-22deg", delay: "2.0s", dur: "7.4s", front: false, bob: false, mobile: false },
+
+] as const;
 
 const PARTNERS = [
   "FitLife King West",
@@ -26,7 +53,6 @@ const PARTNERS = [
 
 export default async function HomePage() {
   const featured = products.filter((p) => p.bestseller);
-  const pickOfTheDay = featured[0];
 
   const user = await getCurrentUser();
   const sub = user ? await getActiveSubscription(user.id) : null;
@@ -37,45 +63,28 @@ export default async function HomePage() {
   return (
     <>
       {/* ───────────── Hero ───────────── */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-brand-50 via-brand-50/40 to-background">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -top-24 -left-32 h-96 w-96 rounded-full bg-brand-200/40 blur-3xl"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute top-40 -right-24 h-80 w-80 rounded-full bg-brand-300/30 blur-3xl"
-        />
+      <section className="relative overflow-hidden bg-background">
 
-        {/* Floating fresh-ingredient leaves */}
-        {[
-          { className: "left-[5%] top-[16%] h-14 w-14 text-brand-400/85", delay: "0s", rot: "-12deg", dur: "6s", mobile: true },
-          { className: "left-[43%] top-[8%] h-10 w-10 text-brand-300/75", delay: "1.2s", rot: "20deg", dur: "7s", mobile: false },
-          { className: "right-[38%] bottom-[12%] h-12 w-12 text-brand-500/70", delay: "0.6s", rot: "8deg", dur: "5.5s", mobile: false },
-          { className: "left-[8%] bottom-[14%] h-16 w-16 text-brand-300/70", delay: "2.1s", rot: "-24deg", dur: "6.5s", mobile: true },
-          { className: "right-[5%] top-[22%] h-11 w-11 text-brand-400/80", delay: "1.6s", rot: "16deg", dur: "7.5s", mobile: false },
-          { className: "left-[50%] bottom-[6%] h-9 w-9 text-brand-500/60", delay: "0.3s", rot: "-6deg", dur: "5s", mobile: false },
-          { className: "right-[14%] bottom-[28%] h-12 w-12 text-brand-400/65", delay: "2.6s", rot: "30deg", dur: "6.8s", mobile: false },
-          { className: "left-[26%] top-[6%] h-10 w-10 text-brand-500/55", delay: "0.9s", rot: "-18deg", dur: "8s", mobile: false },
-        ].map((leaf, i) => (
-          <svg
+        {/* Floating fresh-ingredient cutouts */}
+        {HERO_DECOR.map((d, i) => (
+          <Image
             key={i}
+            src={d.src}
+            alt=""
             aria-hidden
-            viewBox="0 0 24 24"
-            fill="currentColor"
+            width={d.w}
+            height={d.h}
             style={
               {
-                animationDelay: leaf.delay,
-                animationDuration: leaf.dur,
-                "--nv-rot": leaf.rot,
+                animationDelay: d.delay,
+                animationDuration: d.dur,
+                "--nv-rot": d.rot,
               } as React.CSSProperties
             }
-            className={`nv-float pointer-events-none absolute drop-shadow-sm ${
-              leaf.mobile ? "block" : "hidden sm:block"
-            } ${leaf.className}`}
-          >
-            <path d="M21 3c-9 0-16 5-16 13 0 1.7.4 3.2 1.1 4.5C9 16 13 12.5 18 11c-4 2.3-7 5.6-8.6 9.6 1.1.5 2.3.8 3.6.8 8 0 13-7 13-16V3z" />
-          </svg>
+            className={`${d.bob ? "nv-bob" : "nv-float"} pointer-events-none absolute h-auto select-none drop-shadow-[0_8px_10px_rgba(0,0,0,0.12)] ${
+              d.front ? "z-20" : ""
+            } ${d.mobile ? "block" : "hidden sm:block"} ${d.className}`}
+          />
         ))}
 
         <Container className="relative py-20 sm:py-28 lg:py-32">
@@ -98,9 +107,9 @@ export default async function HomePage() {
                 <Eyebrow>Fresh nutrition. Instantly.</Eyebrow>
               )}
               <h1 className="mt-5 text-5xl font-semibold tracking-[-0.02em] text-foreground sm:text-6xl lg:text-7xl leading-[1.02]">
-                Fresh Nutrition in
+                Fresh Nutrition Made
                 <span className="block">
-                  <span className="text-brand-600">60 Seconds.</span>
+                  <span className="text-brand-600">Instantly.</span>
                 </span>
               </h1>
               <p className="mt-6 text-lg sm:text-xl text-muted max-w-xl leading-relaxed">
@@ -215,75 +224,15 @@ export default async function HomePage() {
 
             <Reveal delay={120}>
               <div className="relative">
-                <div className="relative overflow-hidden rounded-[2rem] border border-border bg-white shadow-2xl shadow-brand-900/10 aspect-[4/5]">
+                <div className="relative aspect-[4/5]">
                   <Image
                     src={HERO_IMAGE}
-                    alt="A NutriVendo smart vending machine in a cafe"
+                    alt="The NutriVendo smart vending machine"
                     fill
                     priority
                     sizes="(min-width: 1024px) 520px, 100vw"
-                    className="object-cover"
+                    className="object-contain mix-blend-multiply"
                   />
-                  <div
-                    aria-hidden
-                    className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"
-                  />
-
-                  <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-medium shadow-sm backdrop-blur">
-                    <span className="relative flex h-2 w-2">
-                      <span
-                        aria-hidden
-                        className="absolute inset-0 animate-ping rounded-full bg-brand-500/70"
-                      />
-                      <span className="relative h-2 w-2 rounded-full bg-brand-500" />
-                    </span>
-                    6 machines live nearby
-                  </div>
-
-                  <div className="absolute bottom-5 left-5 right-5 sm:right-auto sm:w-64 rounded-2xl border border-border bg-white p-4 shadow-xl">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <p className="text-[11px] font-medium uppercase tracking-wide text-brand-700">
-                          Today's pick
-                        </p>
-                        <p className="mt-1 font-semibold">{pickOfTheDay.name}</p>
-                        <p className="text-xs text-muted">
-                          {pickOfTheDay.category} · ${pickOfTheDay.price.toFixed(2)}
-                        </p>
-                      </div>
-                      <span
-                        aria-hidden
-                        className="inline-flex h-7 w-7 flex-none items-center justify-center rounded-full bg-brand-50 text-brand-700"
-                      >
-                        <svg
-                          viewBox="0 0 24 24"
-                          className="h-3.5 w-3.5"
-                          fill="currentColor"
-                        >
-                          <path d="M12 2c3.5 4.8 6 8.4 6 12a6 6 0 1 1-12 0c0-3.6 2.5-7.2 6-12z" />
-                        </svg>
-                      </span>
-                    </div>
-                    <Link
-                      href="/menu"
-                      className="focus-ring mt-3 inline-flex h-9 w-full items-center justify-center rounded-full bg-accent-600 px-3 text-xs font-semibold text-white hover:bg-accent-700 transition-colors"
-                    >
-                      Try it now →
-                    </Link>
-                  </div>
-                </div>
-
-                <div
-                  aria-hidden
-                  className="hidden lg:grid absolute -top-4 -left-4 h-12 w-12 place-items-center rounded-2xl bg-white shadow-md ring-1 ring-border"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-6 w-6 text-brand-500"
-                    fill="currentColor"
-                  >
-                    <path d="M12 2c3.5 4.8 6 8.4 6 12a6 6 0 1 1-12 0c0-3.6 2.5-7.2 6-12z" />
-                  </svg>
                 </div>
               </div>
             </Reveal>
@@ -298,7 +247,9 @@ export default async function HomePage() {
             <p className="text-xs font-medium uppercase tracking-wide text-muted">
               Stocked daily at
             </p>
-            <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-foreground/70">
+
+            {/* Desktop: static wrapped list (kept screen-reader-only on mobile) */}
+            <ul className="sr-only sm:not-sr-only sm:flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-foreground/70">
               {PARTNERS.map((p, i) => (
                 <li key={p} className="flex items-center gap-6">
                   <span className="whitespace-nowrap">{p}</span>
@@ -308,6 +259,21 @@ export default async function HomePage() {
                 </li>
               ))}
             </ul>
+
+            {/* Mobile: continuous marquee */}
+            <div
+              aria-hidden
+              className="nv-marquee-mask w-full overflow-hidden sm:hidden"
+            >
+              <div className="nv-marquee flex w-max items-center text-sm font-medium text-foreground/70">
+                {[...PARTNERS, ...PARTNERS].map((p, i) => (
+                  <span key={i} className="flex items-center">
+                    <span className="whitespace-nowrap">{p}</span>
+                    <span className="px-6 text-border">·</span>
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         </Container>
       </section>
