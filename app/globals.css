@@ -242,6 +242,65 @@ h4 {
   }
 }
 
+/* ── Landing page visual enhancements ── */
+
+/* Gradient text effect for hero headline accent. */
+.nv-text-gradient {
+  background: linear-gradient(135deg, var(--brand-600) 0%, var(--brand-300) 60%, var(--brand-500) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Floating badge animation for hero decorative elements. */
+@keyframes nv-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.nv-float {
+  animation: nv-float 4s ease-in-out infinite;
+}
+.nv-float-delayed {
+  animation: nv-float 4s ease-in-out 1.5s infinite;
+}
+
+/* Value prop card style (shared by Why NutriVendo and plan cards). */
+.nv-value-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, ring-color 0.3s ease;
+}
+
+/* Review card with quote accent. */
+.nv-review-card {
+  position: relative;
+}
+
+/* CTA section with enhanced vending-pattern. */
+.nv-cta-section {
+  background-color: #3c6a00;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(159, 217, 98, 0.15) 0%, transparent 50%),
+    radial-gradient(#4e6536 1px, transparent 1px);
+  background-size: 100% 100%, 20px 20px;
+}
+
+/* "Now in Toronto" badge pulse ring. */
+.nv-badge {
+  position: relative;
+}
+.nv-badge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  box-shadow: 0 0 0 0 rgba(60, 106, 0, 0.4);
+  animation: nv-badge-ring 2.5s ease-out infinite;
+}
+@keyframes nv-badge-ring {
+  0% { box-shadow: 0 0 0 0 rgba(60, 106, 0, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(60, 106, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(60, 106, 0, 0); }
+}
+
 .nv-pin {
   background: transparent;
   border: 0;

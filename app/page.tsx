@@ -38,10 +38,16 @@ export default async function HomePage() {
     <>
       {/* ───────────── Hero ───────────── */}
       <section className="relative overflow-hidden bg-surface">
+        {/* Decorative gradient orbs */}
         <div
           aria-hidden
-          className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-primary-container/30 blur-3xl"
+          className="pointer-events-none absolute -right-32 -top-32 h-[500px] w-[500px] rounded-full bg-primary-container/25 blur-[100px]"
         />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -left-20 bottom-0 h-[400px] w-[400px] rounded-full bg-secondary-container/20 blur-[80px]"
+        />
+
         {/* Mobile only: machine as a faded hero backdrop behind the text */}
         <div
           aria-hidden
@@ -56,11 +62,12 @@ export default async function HomePage() {
             className="object-contain object-center opacity-[0.195] [mask-image:linear-gradient(to_bottom,black_70%,transparent)]"
           />
         </div>
-        <Container className="relative py-16 sm:py-20 lg:py-28">
-          <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_1fr]">
+
+        <Container className="relative py-20 sm:py-24 lg:py-32">
+          <div className="grid items-center gap-12 lg:grid-cols-[1.15fr_1fr]">
             <Reveal>
               {user ? (
-                <div className="mb-4 inline-flex flex-wrap items-center gap-2">
+                <div className="mb-5 inline-flex flex-wrap items-center gap-2">
                   <Eyebrow>Welcome back, {user.first_name}.</Eyebrow>
                   {subPlan && (
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-container-lowest px-3 py-1 text-xs font-medium text-on-primary-container ring-1 ring-primary-container">
@@ -73,50 +80,48 @@ export default async function HomePage() {
                   )}
                 </div>
               ) : (
-                <span className="mb-4 block">
-                  <Eyebrow>Pure energy. Pure freshness.</Eyebrow>
-                </span>
+                <div className="mb-6 flex items-center gap-3">
+                  <span className="nv-badge inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-semibold text-on-primary shadow-sm">
+                    <span className="h-1.5 w-1.5 rounded-full bg-on-primary animate-pulse" />
+                    Now in Toronto
+                  </span>
+                </div>
               )}
-              <h1 className="font-display text-5xl font-bold leading-[1.02] text-on-surface sm:text-6xl lg:text-7xl">
-                Fresh Nutrition Made{" "}
-                <span className="text-primary">Instantly.</span>
+              <h1 className="font-display text-5xl font-extrabold leading-[1.01] tracking-tight text-on-surface sm:text-6xl lg:text-[4.5rem]">
+                Fresh Nutrition,{" "}
+                <span className="nv-text-gradient">Instantly.</span>
               </h1>
               <p className="mt-6 max-w-lg text-lg leading-relaxed text-on-surface-variant sm:text-xl">
-                NutriVendo delivers fresh, customizable healthy drinks instantly
-                through smart vending technology.
+                Real-ingredient smoothies, shakes, and juices blended fresh
+                in 60 seconds through smart vending machines.
               </p>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
+              <div className="mt-9 flex flex-wrap items-center gap-4">
                 <Link
                   href="/locations"
-                  className="focus-ring inline-flex min-h-[56px] items-center gap-2 rounded-full bg-primary px-8 text-base font-semibold text-on-primary shadow-lg shadow-primary/25 transition-all hover:bg-brand-700"
+                  className="focus-ring inline-flex min-h-[56px] items-center gap-2.5 rounded-full bg-primary px-9 text-base font-semibold text-on-primary shadow-lg shadow-primary/25 transition-all hover:bg-brand-700 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 active:translate-y-0"
                 >
                   <Icon name="location_on" size={20} />
                   Find a Machine
                 </Link>
                 <Link
                   href="/menu"
-                  className="focus-ring inline-flex min-h-[56px] items-center gap-2 rounded-full border-2 border-primary bg-transparent px-8 text-base font-semibold text-primary transition-all hover:bg-brand-50"
+                  className="focus-ring inline-flex min-h-[56px] items-center gap-2.5 rounded-full border-2 border-primary bg-transparent px-9 text-base font-semibold text-primary transition-all hover:bg-brand-50 hover:-translate-y-0.5 active:translate-y-0"
                 >
                   <Icon name="local_drink" size={20} />
                   Explore Menu
                 </Link>
               </div>
 
-              <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4 text-sm">
+              {/* Trust stats row */}
+              <div className="mt-12 flex flex-wrap items-center gap-8 sm:gap-10">
                 {heroStats.map((item, i) => (
-                  <div key={item.label[0]} className="flex items-center gap-3">
-                    {i > 0 && (
-                      <span
-                        aria-hidden
-                        className="-ml-2 mr-1 hidden h-8 w-px bg-outline-variant sm:block"
-                      />
-                    )}
-                    <span className="inline-flex h-10 w-10 flex-none items-center justify-center rounded-full bg-primary-container text-on-primary-container">
-                      <Icon name={item.icon} size={20} filled />
+                  <div key={item.label[0]} className="flex items-center gap-3.5">
+                    <span className="inline-flex h-12 w-12 flex-none items-center justify-center rounded-2xl bg-primary-container text-on-primary-container shadow-sm">
+                      <Icon name={item.icon} size={22} filled />
                     </span>
-                    <span className="font-medium leading-tight text-on-surface">
+                    <span className="font-semibold leading-tight text-on-surface">
                       {item.label[0]}
-                      <span className="block font-normal text-on-surface-variant">
+                      <span className="block text-sm font-normal text-on-surface-variant">
                         {item.label[1]}
                       </span>
                     </span>
@@ -126,15 +131,40 @@ export default async function HomePage() {
             </Reveal>
 
             <Reveal delay={120} className="hidden lg:block">
-              <div className="relative h-[672px]">
-                <Image
-                  src={HERO_IMAGE}
-                  alt="The NutriVendo smart vending machine"
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 672px, 100vw"
-                  className="object-contain"
-                />
+              <div className="relative">
+                {/* Floating badge on machine image */}
+                <div className="absolute -left-4 top-8 z-10 nv-float">
+                  <div className="product-card-shadow flex items-center gap-2 rounded-2xl bg-surface-container-lowest px-4 py-3 ring-1 ring-outline-variant/50">
+                    <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary-container text-on-primary-container">
+                      <Icon name="timer" size={18} filled />
+                    </span>
+                    <div>
+                      <p className="text-xs font-semibold text-on-surface">60 seconds</p>
+                      <p className="text-[11px] text-on-surface-variant">From tap to sip</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="absolute -right-2 bottom-16 z-10 nv-float-delayed">
+                  <div className="product-card-shadow flex items-center gap-2 rounded-2xl bg-surface-container-lowest px-4 py-3 ring-1 ring-outline-variant/50">
+                    <span className="grid h-9 w-9 place-items-center rounded-xl bg-secondary-container text-on-secondary-container">
+                      <Icon name="eco" size={18} filled />
+                    </span>
+                    <div>
+                      <p className="text-xs font-semibold text-on-surface">Real ingredients</p>
+                      <p className="text-[11px] text-on-surface-variant">No shortcuts</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="relative h-[672px]">
+                  <Image
+                    src={HERO_IMAGE}
+                    alt="The NutriVendo smart vending machine"
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 672px, 100vw"
+                    className="object-contain"
+                  />
+                </div>
               </div>
             </Reveal>
           </div>
@@ -203,12 +233,22 @@ export default async function HomePage() {
             </div>
           </Reveal>
 
-          <div className="mt-14 grid gap-12 md:grid-cols-3">
+          <div className="relative mt-16 grid gap-8 md:grid-cols-3">
+            {/* Connecting line between steps (desktop) */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute left-[16.67%] right-[16.67%] top-12 hidden h-px bg-gradient-to-r from-primary/0 via-primary/30 to-primary/0 md:block"
+            />
             {howItWorks.map((step, i) => (
               <Reveal key={step.title} delay={i * 100}>
                 <div className="group text-center">
-                  <div className="mx-auto mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-primary-container text-on-primary-container transition-transform group-hover:scale-110">
-                    <Icon name={step.icon} size={40} filled />
+                  <div className="relative mx-auto mb-6">
+                    <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-3xl bg-primary-container text-on-primary-container transition-all group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary-container/40">
+                      <Icon name={step.icon} size={40} filled />
+                    </div>
+                    <span className="absolute -top-1 -right-1 grid h-7 w-7 place-items-center rounded-full bg-primary text-xs font-bold text-on-primary shadow-sm">
+                      {i + 1}
+                    </span>
                   </div>
                   <h3 className="text-xl font-semibold">{step.title}</h3>
                   <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-on-surface-variant">
@@ -235,12 +275,12 @@ export default async function HomePage() {
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {valueProps.map((v, i) => (
               <Reveal key={v.title} delay={i * 80}>
-                <div className="product-card-shadow h-full rounded-xl bg-surface-container-lowest p-6">
-                  <div className="grid h-12 w-12 place-items-center rounded-2xl bg-primary-container text-on-primary-container">
-                    <Icon name={v.icon} size={24} filled />
+                <div className="nv-value-card group h-full rounded-2xl bg-surface-container-lowest p-7 ring-1 ring-outline-variant/40 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-container/10 hover:ring-primary/30">
+                  <div className="grid h-14 w-14 place-items-center rounded-2xl bg-primary-container text-on-primary-container transition-transform group-hover:scale-110">
+                    <Icon name={v.icon} size={28} filled />
                   </div>
-                  <h3 className="mt-5 text-lg font-semibold">{v.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-on-surface-variant">
+                  <h3 className="mt-6 text-lg font-semibold">{v.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-on-surface-variant">
                     {v.body}
                   </p>
                 </div>
@@ -267,9 +307,10 @@ export default async function HomePage() {
               </div>
               <Link
                 href="/menu"
-                className="focus-ring rounded-full px-2 py-1 text-sm font-semibold text-primary hover:text-brand-700"
+                className="focus-ring inline-flex items-center gap-1.5 rounded-full bg-surface-container-low px-5 py-2.5 text-sm font-semibold text-primary ring-1 ring-outline-variant transition-all hover:bg-primary hover:text-on-primary hover:ring-primary"
               >
-                See full menu →
+                See full menu
+                <Icon name="arrow_forward" size={16} />
               </Link>
             </div>
           </Reveal>
@@ -315,7 +356,7 @@ export default async function HomePage() {
                 </div>
                 <Link
                   href="/locations"
-                  className="focus-ring mt-7 inline-flex min-h-[56px] items-center gap-2 rounded-full bg-white px-8 text-base font-semibold text-primary shadow-xl transition-all hover:bg-surface-container"
+                  className="focus-ring mt-7 inline-flex min-h-[56px] items-center gap-2 rounded-full bg-white px-8 text-base font-semibold text-primary shadow-xl transition-all hover:bg-surface-container hover:-translate-y-0.5"
                 >
                   <Icon name="map" size={20} />
                   Open Interactive Map
@@ -366,34 +407,34 @@ export default async function HomePage() {
               <Reveal key={plan.id} delay={i * 80}>
                 <div
                   className={
-                    "relative h-full rounded-xl p-6 transition-all " +
+                    "relative h-full rounded-2xl p-7 transition-all " +
                     (plan.highlight
-                      ? "bg-primary-container text-on-primary-container shadow-xl md:scale-[1.04]"
-                      : "product-card-shadow bg-surface-container-lowest")
+                      ? "bg-primary-container text-on-primary-container shadow-xl md:scale-[1.04] ring-2 ring-primary"
+                      : "nv-value-card bg-surface-container-lowest ring-1 ring-outline-variant/40 hover:-translate-y-1 hover:shadow-lg hover:ring-primary/30")
                   }
                 >
                   {plan.highlight && (
-                    <span className="absolute -top-3 right-6 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary">
+                    <span className="absolute -top-3.5 right-6 rounded-full bg-primary px-4 py-1.5 text-xs font-bold text-on-primary shadow-md">
                       Most popular
                     </span>
                   )}
                   <p className="text-sm opacity-80">{plan.tagline}</p>
                   <h3 className="mt-1 text-2xl font-bold">{plan.name}</h3>
-                  <p className="mt-3">
-                    <span className="text-4xl font-bold tracking-tight">
+                  <p className="mt-4">
+                    <span className="text-5xl font-extrabold tracking-tight">
                       ${plan.monthly}
                     </span>
                     <span className="text-sm opacity-70"> /mo</span>
                   </p>
                   <p
                     className={
-                      "mt-1 text-xs font-medium " +
+                      "mt-1 text-xs font-semibold " +
                       (plan.highlight ? "" : "text-primary")
                     }
                   >
                     {planSavings(plan.id)}
                   </p>
-                  <ul className="mt-5 space-y-2 text-sm">
+                  <ul className="mt-6 space-y-2.5 text-sm">
                     {plan.features.slice(0, 3).map((f) => (
                       <li key={f} className="flex gap-2">
                         <Icon
@@ -417,7 +458,7 @@ export default async function HomePage() {
             <div className="mt-10 text-center">
               <Link
                 href="/plans"
-                className="focus-ring inline-flex h-12 items-center rounded-full bg-primary px-8 text-sm font-semibold text-on-primary shadow-sm transition-all hover:bg-brand-700"
+                className="focus-ring inline-flex h-12 items-center rounded-full bg-primary px-8 text-sm font-semibold text-on-primary shadow-sm transition-all hover:bg-brand-700 hover:shadow-md"
               >
                 Compare all plans
               </Link>
@@ -431,11 +472,11 @@ export default async function HomePage() {
         <Container>
           <Reveal>
             <div className="mx-auto max-w-2xl text-center">
-              <div className="inline-flex items-center justify-center gap-2 rounded-full bg-secondary-container px-3 py-1 text-xs font-medium text-on-secondary-container">
+              <div className="inline-flex items-center justify-center gap-2 rounded-full bg-secondary-container px-4 py-1.5 text-xs font-medium text-on-secondary-container">
                 <Stars n={5} />
                 4.9 / 5 · 2,300+ reviews
               </div>
-              <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
+              <h2 className="mt-5 text-3xl font-bold tracking-tight sm:text-4xl">
                 Loved by daily sippers.
               </h2>
             </div>
@@ -443,7 +484,8 @@ export default async function HomePage() {
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {reviews.slice(0, 3).map((r, i) => (
               <Reveal key={r.id} delay={i * 80}>
-                <Card className="flex h-full flex-col">
+                <Card className="nv-review-card flex h-full flex-col">
+                  <Icon name="format_quote" size={32} filled className="text-primary/30 -ml-1" />
                   <Stars n={r.rating} />
                   <p className="mt-4 text-sm leading-relaxed text-on-surface">
                     {r.body}
@@ -471,24 +513,28 @@ export default async function HomePage() {
       <Section className="pb-24">
         <Container>
           <Reveal>
-            <div className="vending-pattern relative overflow-hidden rounded-[2rem] px-8 py-14 text-center sm:px-16">
-              <h2 className="relative text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                Ready to upgrade your default drink?
+            <div className="nv-cta-section relative overflow-hidden rounded-[2rem] px-8 py-16 text-center sm:px-16 sm:py-20">
+              <div aria-hidden className="nv-cta-glow pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full bg-white/10 blur-[80px]" />
+              <div aria-hidden className="nv-cta-glow pointer-events-none absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-primary-container/15 blur-[60px]" />
+              <h2 className="relative font-display text-3xl font-bold tracking-tight text-white sm:text-5xl">
+                Ready to upgrade
+                <br className="hidden sm:block" />
+                {" "}your default drink?
               </h2>
-              <p className="relative mx-auto mt-3 max-w-xl leading-relaxed text-white/80">
+              <p className="relative mx-auto mt-5 max-w-xl leading-relaxed text-white/80 sm:text-lg">
                 Join thousands of sippers who&apos;ve replaced the
                 vending-machine soda with something their body actually wants.
               </p>
-              <div className="relative mt-7 flex flex-wrap justify-center gap-3">
+              <div className="relative mt-8 flex flex-wrap justify-center gap-4">
                 <Link
                   href="/register"
-                  className="focus-ring inline-flex min-h-[56px] items-center rounded-full bg-white px-8 text-base font-semibold text-primary transition-colors hover:bg-surface-container"
+                  className="focus-ring inline-flex min-h-[56px] items-center rounded-full bg-white px-9 text-base font-semibold text-primary shadow-xl transition-all hover:bg-surface-container hover:-translate-y-0.5 hover:shadow-2xl"
                 >
                   {user ? "Manage your account" : "Create your account"}
                 </Link>
                 <Link
                   href="/locations"
-                  className="focus-ring inline-flex min-h-[56px] items-center rounded-full border-2 border-white/40 px-8 text-base font-semibold text-white transition-colors hover:bg-white/10"
+                  className="focus-ring inline-flex min-h-[56px] items-center rounded-full border-2 border-white/40 bg-white/5 px-9 text-base font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/15 hover:-translate-y-0.5"
                 >
                   Find your nearest machine
                 </Link>
