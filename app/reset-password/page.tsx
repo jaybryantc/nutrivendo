@@ -18,14 +18,14 @@ export default function ResetPasswordPage() {
       }
       footer={
         done ? (
-          <Link href="/login" className="font-medium text-brand-700 hover:text-brand-800">
+          <Link href="/login" className="font-medium text-primary hover:text-brand-700">
             Sign in
           </Link>
         ) : null
       }
     >
       {done ? (
-        <div className="rounded-xl bg-brand-50 px-4 py-3 text-sm text-brand-800">
+        <div className="rounded-xl bg-primary-container px-4 py-3 text-sm text-on-primary-container">
           Password updated successfully.
         </div>
       ) : (

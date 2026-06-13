@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Container, Section, Eyebrow, Card } from "@/components/ui";
+import { Container, Section, Eyebrow, Card, Button } from "@/components/ui";
 import { getCurrentUser } from "@/lib/auth";
 import {
   getActiveSubscription,
@@ -52,7 +52,7 @@ export default async function AccountPage({
         {params.subscribed && (
           <div
             role="status"
-            className="mt-6 rounded-xl bg-brand-50 px-4 py-3 text-sm text-brand-800"
+            className="mt-6 rounded-xl bg-secondary-container px-4 py-3 text-sm text-on-secondary-container"
           >
             Subscription updated. Welcome aboard.
           </div>
@@ -60,7 +60,7 @@ export default async function AccountPage({
         {params.cancelled && (
           <div
             role="status"
-            className="mt-6 rounded-xl bg-brand-50 px-4 py-3 text-sm text-brand-800"
+            className="mt-6 rounded-xl bg-secondary-container px-4 py-3 text-sm text-on-secondary-container"
           >
             Subscription cancelled. You can re-subscribe anytime.
           </div>
@@ -68,7 +68,12 @@ export default async function AccountPage({
 
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
           <Card>
-            <h2 className="font-semibold">Profile</h2>
+            <div className="flex items-center gap-3">
+              <span className="flex h-12 w-12 flex-none items-center justify-center rounded-full bg-primary-container text-sm font-semibold text-on-primary-container">
+                {`${user.first_name?.[0] ?? ""}${user.last_name?.[0] ?? ""}`.toUpperCase()}
+              </span>
+              <h2 className="font-semibold">Profile</h2>
+            </div>
             <dl className="mt-4 space-y-3 text-sm">
               <div className="flex justify-between">
                 <dt className="text-muted">Name</dt>
@@ -92,12 +97,9 @@ export default async function AccountPage({
               </div>
             </dl>
             <form action={logoutAction} className="mt-6">
-              <button
-                type="submit"
-                className="inline-flex h-10 items-center rounded-full border border-border bg-white px-4 text-sm font-medium hover:bg-surface"
-              >
+              <Button type="submit" variant="secondary" size="sm">
                 Log out
-              </button>
+              </Button>
             </form>
           </Card>
 
@@ -105,12 +107,12 @@ export default async function AccountPage({
             <h2 className="font-semibold">Subscription</h2>
             {sub && plan ? (
               <>
-                <div className="mt-4 rounded-xl bg-brand-50 px-4 py-4">
-                  <p className="text-xs font-medium uppercase tracking-wide text-brand-700">
+                <div className="mt-4 rounded-xl bg-primary-container px-4 py-4 text-on-primary-container">
+                  <p className="text-xs font-medium uppercase tracking-wide">
                     Active plan
                   </p>
-                  <p className="mt-1 text-2xl font-semibold">{plan.name}</p>
-                  <p className="text-sm text-brand-800">
+                  <p className="mt-1 text-2xl font-bold tracking-tight">{plan.name}</p>
+                  <p className="text-sm text-on-primary-container/80">
                     ${plan.monthly}/mo · Started{" "}
                     {new Date(sub.started_at).toLocaleDateString(undefined, {
                       year: "numeric",
@@ -130,9 +132,9 @@ export default async function AccountPage({
                     </span>
                   </div>
                   {usagePct !== null && (
-                    <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-brand-50">
+                    <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-surface-container">
                       <div
-                        className="h-full rounded-full bg-brand-500 transition-all"
+                        className="h-full rounded-full bg-primary transition-all"
                         style={{ width: `${usagePct}%` }}
                         aria-hidden
                       />
@@ -146,17 +148,14 @@ export default async function AccountPage({
                 <div className="mt-5 flex flex-wrap items-center gap-3">
                   <Link
                     href="/plans"
-                    className="inline-flex h-10 items-center rounded-full bg-brand-500 px-4 text-sm font-medium text-white hover:bg-brand-600"
+                    className="inline-flex h-9 items-center rounded-full bg-primary px-4 text-sm font-medium text-on-primary shadow-sm transition-colors hover:bg-brand-700"
                   >
                     Change plan
                   </Link>
                   <form action={cancelSubscriptionAction}>
-                    <button
-                      type="submit"
-                      className="inline-flex h-10 items-center rounded-full border border-border bg-white px-4 text-sm font-medium text-foreground hover:bg-surface"
-                    >
+                    <Button type="submit" variant="secondary" size="sm">
                       Cancel subscription
-                    </button>
+                    </Button>
                   </form>
                 </div>
               </>
@@ -168,7 +167,7 @@ export default async function AccountPage({
                 </p>
                 <Link
                   href="/plans"
-                  className="mt-5 inline-flex h-10 items-center rounded-full bg-brand-500 px-4 text-sm font-medium text-white hover:bg-brand-600"
+                  className="mt-5 inline-flex h-9 items-center rounded-full bg-primary px-4 text-sm font-medium text-on-primary shadow-sm transition-colors hover:bg-brand-700"
                 >
                   Browse plans
                 </Link>
@@ -182,7 +181,7 @@ export default async function AccountPage({
             <h2 className="font-semibold">Recent orders</h2>
             <Link
               href="/orders"
-              className="text-sm font-medium text-brand-700 hover:text-brand-800"
+              className="text-sm font-medium text-primary hover:underline"
             >
               See all →
             </Link>
@@ -192,12 +191,12 @@ export default async function AccountPage({
               You haven't placed an order yet.
             </p>
           ) : (
-            <ul className="mt-4 divide-y divide-border">
+            <ul className="mt-4 divide-y divide-outline-variant">
               {orders.slice(0, 3).map((o) => (
                 <li key={o.id}>
                   <Link
                     href={`/orders/${o.id}`}
-                    className="flex items-center justify-between py-3 text-sm hover:text-brand-700"
+                    className="flex items-center justify-between py-3 text-sm hover:text-primary"
                   >
                     <span>
                       <span className="font-medium">{o.pickup_code}</span>{" "}

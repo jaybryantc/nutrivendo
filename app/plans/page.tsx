@@ -40,7 +40,7 @@ export default async function PlansPage() {
 
   return (
     <>
-      <Section className="pb-0">
+      <Section className="pb-0 lg:pb-0 lg:pt-12">
         <Container>
           <Eyebrow>Plans</Eyebrow>
           <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl max-w-3xl">
@@ -50,8 +50,8 @@ export default async function PlansPage() {
             All plans work at every NutriVendo machine. Cancel anytime.
           </p>
           {currentPlan && (
-            <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-1.5 text-sm text-brand-700 ring-1 ring-brand-100">
-              <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
+            <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-secondary-container px-3 py-1.5 text-sm text-on-secondary-container">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
               <span>
                 You're on{" "}
                 <span className="font-semibold">{currentPlan.name}</span> ·{" "}
@@ -64,7 +64,7 @@ export default async function PlansPage() {
         </Container>
       </Section>
 
-      <Section>
+      <Section className="lg:pt-12">
         <Container>
           <PlansGrid
             currentPlanId={currentPlan?.id ?? null}

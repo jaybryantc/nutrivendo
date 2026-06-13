@@ -16,11 +16,12 @@ export default function Header({ user }: { user: CurrentUser | null }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-outline-variant bg-background/80 shadow-sm backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Logo />
 
-        <nav className="hidden md:flex items-center gap-8">
+        {/* Full horizontal nav — desktop only */}
+        <nav className="hidden lg:flex items-center gap-8">
           {navLinks.map((link) => {
             const active = pathname === link.href;
             return (
@@ -30,8 +31,8 @@ export default function Header({ user }: { user: CurrentUser | null }) {
                 className={cn(
                   "text-sm transition-colors",
                   active
-                    ? "text-brand-700 font-medium"
-                    : "text-foreground/70 hover:text-foreground"
+                    ? "text-primary font-bold border-b-2 border-primary py-1"
+                    : "text-on-surface-variant hover:text-primary"
                 )}
               >
                 {link.label}
@@ -40,7 +41,8 @@ export default function Header({ user }: { user: CurrentUser | null }) {
           })}
         </nav>
 
-        <div className="hidden md:flex items-center gap-3">
+        {/* Desktop actions */}
+        <div className="hidden lg:flex items-center gap-3">
           {user ? (
             <>
               <CartIcon />
@@ -57,7 +59,7 @@ export default function Header({ user }: { user: CurrentUser | null }) {
               </Link>
               <Link
                 href="/register"
-                className="focus-ring inline-flex h-9 items-center rounded-full bg-brand-600 px-4 text-sm font-medium text-white shadow-sm hover:bg-brand-700 transition-colors"
+                className="focus-ring inline-flex h-10 items-center rounded-full bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm hover:bg-brand-700 transition-colors"
               >
                 Get started
               </Link>
@@ -65,7 +67,8 @@ export default function Header({ user }: { user: CurrentUser | null }) {
           )}
         </div>
 
-        <div className="md:hidden flex items-center gap-1">
+        {/* Tablet hamburger (md → <lg) */}
+        <div className="hidden md:flex lg:hidden items-center gap-1">
           <CartIcon />
           <button
             type="button"
@@ -83,10 +86,25 @@ export default function Header({ user }: { user: CurrentUser | null }) {
             </svg>
           </button>
         </div>
+
+        {/* Phones: navigation lives in the fixed bottom bar (see BottomNav). */}
+        <div className="md:hidden flex items-center">
+          {user ? (
+            <CartIcon />
+          ) : (
+            <Link
+              href="/login"
+              className="focus-ring rounded-full px-3 py-1 text-sm font-medium text-foreground/70 hover:text-foreground"
+            >
+              Log in
+            </Link>
+          )}
+        </div>
       </div>
 
+      {/* Tablet drawer */}
       {open && (
-        <div className="md:hidden border-t border-border bg-background">
+        <div className="hidden md:block lg:hidden border-t border-border bg-background">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 py-3 flex flex-col gap-1">
             {navLinks.map((link) => (
               <Link
@@ -146,7 +164,7 @@ export default function Header({ user }: { user: CurrentUser | null }) {
                 <Link
                   href="/register"
                   onClick={() => setOpen(false)}
-                  className="flex-1 inline-flex h-10 items-center justify-center rounded-full bg-brand-500 text-sm font-medium text-white"
+                  className="flex-1 inline-flex h-10 items-center justify-center rounded-full bg-primary text-sm font-semibold text-on-primary"
                 >
                   Get started
                 </Link>

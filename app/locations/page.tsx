@@ -1,13 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Container, Section, Eyebrow } from "@/components/ui";
+import { Container, Section, Eyebrow, Input } from "@/components/ui";
+import Icon from "@/components/icon";
 import { locations, type Location } from "@/lib/data";
 import { cn } from "@/lib/cn";
 import LocationsMap from "@/components/locations-map";
 
 const types = ["All", "Gym", "Office", "Campus", "Transit"] as const;
 type LocType = (typeof types)[number];
+
+const typeIcons: Record<string, string> = {
+  Gym: "fitness_center",
+  Office: "business",
+  Campus: "school",
+  Transit: "train",
+};
 
 export default function LocationsPage() {
   const [query, setQuery] = useState("");
@@ -27,7 +35,7 @@ export default function LocationsPage() {
 
   return (
     <>
-      <Section className="pb-0">
+      <Section className="pb-0 lg:pb-0 lg:pt-12">
         <Container>
           <Eyebrow>Locations</Eyebrow>
           <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -39,25 +47,20 @@ export default function LocationsPage() {
         </Container>
       </Section>
 
-      <Section>
+      <Section className="lg:pt-12">
         <Container>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <div className="relative flex-1">
-              <svg
-                viewBox="0 0 24 24"
-                className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <circle cx="11" cy="11" r="7" />
-                <path d="M21 21l-4.3-4.3" />
-              </svg>
-              <input
+              <Icon
+                name="search"
+                size={20}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-muted"
+              />
+              <Input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search by city, address, or venue"
-                className="w-full h-12 rounded-full border border-border bg-white pl-11 pr-4 text-sm placeholder:text-muted focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                className="h-12 rounded-full pl-11"
               />
             </div>
             <div className="flex flex-wrap gap-2">
@@ -68,8 +71,8 @@ export default function LocationsPage() {
                   className={cn(
                     "h-10 rounded-full px-4 text-sm font-medium transition-colors",
                     active === t
-                      ? "bg-brand-500 text-white"
-                      : "bg-white text-foreground border border-border hover:bg-surface"
+                      ? "bg-primary text-on-primary"
+                      : "bg-surface-container-low text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container"
                   )}
                 >
                   {t}
@@ -78,8 +81,8 @@ export default function LocationsPage() {
             </div>
           </div>
 
-          <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_1.2fr]">
-            <div className="space-y-3">
+          <div className="mt-8 grid gap-6 lg:mt-10 lg:gap-10 lg:grid-cols-[1fr_1.2fr]">
+            <div className="order-2 space-y-3 lg:order-1">
               {filtered.length === 0 && (
                 <p className="text-muted text-sm">
                   No machines match that search yet. Try a different city.
@@ -104,7 +107,7 @@ export default function LocationsPage() {
                 const el = document.getElementById(`loc-${id}`);
                 el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
               }}
-              className="min-h-[500px] lg:min-h-0 lg:h-full"
+              className="order-1 h-[55vh] min-h-[320px] lg:order-2 lg:h-full lg:min-h-0"
             />
           </div>
         </Container>
@@ -128,34 +131,41 @@ function LocationCard({
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
       className={cn(
-        "rounded-2xl border bg-white p-5 shadow-sm transition-all",
-        active
-          ? "border-brand-500 ring-2 ring-brand-500/30"
-          : "border-border hover:border-brand-200"
+        "product-card-shadow rounded-xl bg-surface-container-lowest p-5 transition-all",
+        active && "ring-2 ring-primary/30"
       )}
     >
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-brand-700">
-            {l.type}
-          </p>
-          <h3 className="mt-1 font-semibold">{l.name}</h3>
-          <p className="text-sm text-muted">
-            {l.address}, {l.city}
-          </p>
+        <div className="flex items-start gap-3">
+          <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-primary-container text-on-primary-container">
+            <Icon name={typeIcons[l.type] ?? "location_on"} size={20} />
+          </span>
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-primary">
+              {l.type}
+            </p>
+            <h3 className="mt-1 font-semibold">{l.name}</h3>
+            <p className="flex items-center gap-1 text-sm text-on-surface-variant">
+              <Icon name="location_on" size={16} className="flex-none" />
+              {l.address}, {l.city}
+            </p>
+          </div>
         </div>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-medium text-brand-700">
-          <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary-container px-2.5 py-1 text-[11px] font-medium text-on-secondary-container">
+          <span className="h-1.5 w-1.5 rounded-full bg-primary" />
           Open
         </span>
       </div>
-      <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
-        <p className="text-xs text-muted">{l.hours}</p>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-t border-outline-variant pt-4">
+        <p className="flex items-center gap-1 text-xs text-on-surface-variant">
+          <Icon name="schedule" size={16} className="flex-none" />
+          {l.hours}
+        </p>
         <a
           href={`https://www.google.com/maps/dir/?api=1&destination=${l.lat},${l.lng}`}
           target="_blank"
           rel="noreferrer"
-          className="text-sm font-medium text-brand-700 hover:text-brand-800"
+          className="text-sm font-medium text-primary hover:underline"
         >
           Get directions →
         </a>

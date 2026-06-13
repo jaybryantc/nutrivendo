@@ -24,7 +24,7 @@ export default function RegisterPage() {
           Already have an account?{" "}
           <Link
             href={`/login${next !== "/menu" ? `?next=${encodeURIComponent(next)}` : ""}`}
-            className="font-medium text-brand-700 hover:text-brand-800"
+            className="font-medium text-primary hover:text-brand-700"
           >
             Sign in
           </Link>
@@ -36,7 +36,7 @@ export default function RegisterPage() {
         {state.error && (
           <div
             role="alert"
-            className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700"
+            className="rounded-xl bg-error-container px-4 py-3 text-sm text-on-error-container"
           >
             {state.error}
           </div>
@@ -67,7 +67,7 @@ export default function RegisterPage() {
             placeholder="At least 8 characters"
           />
         </div>
-        <p className="text-xs text-muted">
+        <p className="text-xs text-on-surface-variant">
           By creating an account you agree to our{" "}
           <Link href="#" className="underline">Terms</Link> and{" "}
           <Link href="#" className="underline">Privacy Policy</Link>.

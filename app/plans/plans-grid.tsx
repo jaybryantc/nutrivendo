@@ -1,7 +1,8 @@
 "use client";
 
 import { useActionState } from "react";
-import { Card } from "@/components/ui";
+import { Card, Button } from "@/components/ui";
+import Icon from "@/components/icon";
 import { plans, isUnlimited, type Plan } from "@/lib/data";
 import {
   subscribeAction,
@@ -78,24 +79,43 @@ function PlanCard({
   return (
     <Card
       className={
-        "relative h-full " +
+        "relative h-full transition-all " +
         (plan.highlight
-          ? "border-brand-500 ring-2 ring-brand-500/30"
+          ? "bg-primary-container text-on-primary-container shadow-xl lg:scale-[1.04]"
           : "")
       }
     >
       {plan.highlight && (
-        <span className="absolute -top-3 right-6 rounded-full bg-brand-500 px-3 py-1 text-xs font-medium text-white">
+        <span className="absolute -top-3 right-6 rounded-full bg-primary px-3 py-1 text-xs font-medium text-on-primary">
           Most popular
         </span>
       )}
-      <p className="text-sm text-muted">{plan.tagline}</p>
-      <h2 className="mt-1 text-2xl font-semibold">{plan.name}</h2>
-      <p className="mt-3">
-        <span className="text-4xl font-semibold">${plan.monthly}</span>
-        <span className="text-muted text-sm"> /mo</span>
+      <p
+        className={
+          "text-sm " + (plan.highlight ? "text-on-primary-container/80" : "text-muted")
+        }
+      >
+        {plan.tagline}
       </p>
-      <p className="mt-1 text-xs text-brand-700">
+      <h2 className="mt-1 text-2xl font-bold tracking-tight">{plan.name}</h2>
+      <p className="mt-3">
+        <span className="text-4xl font-bold">${plan.monthly}</span>
+        <span
+          className={
+            "text-sm " +
+            (plan.highlight ? "text-on-primary-container/80" : "text-muted")
+          }
+        >
+          {" "}
+          /mo
+        </span>
+      </p>
+      <p
+        className={
+          "mt-1 text-xs " +
+          (plan.highlight ? "text-on-primary-container/80" : "text-primary")
+        }
+      >
         {isUnlimited(plan.monthlyQuota)
           ? "Unlimited drinks"
           : `${plan.monthlyQuota} drinks per month`}
@@ -103,44 +123,44 @@ function PlanCard({
       <ul className="mt-5 space-y-2.5 text-sm">
         {plan.features.map((f) => (
           <li key={f} className="flex gap-2">
-            <svg
-              viewBox="0 0 24 24"
-              className="h-5 w-5 flex-none text-brand-500"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 12l5 5L20 7" />
-            </svg>
+            <Icon
+              name="check_circle"
+              size={20}
+              className={
+                "flex-none " +
+                (plan.highlight ? "text-on-primary-container" : "text-primary")
+              }
+            />
             <span>{f}</span>
           </li>
         ))}
       </ul>
 
       {isCurrent ? (
-        <span className="mt-8 inline-flex h-11 w-full items-center justify-center rounded-full bg-brand-100 px-5 text-sm font-medium text-brand-800">
+        <span className="mt-8 inline-flex h-11 w-full items-center justify-center rounded-full bg-secondary-container px-5 text-sm font-medium text-on-secondary-container">
           Current plan
         </span>
       ) : (
         <form action={formAction} className="mt-8">
           <input type="hidden" name="planId" value={plan.id} />
-          <button
+          <Button
             type="submit"
             disabled={downgradeBlocked}
-            className={
-              "inline-flex h-11 w-full items-center justify-center rounded-full px-5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 " +
-              (plan.highlight
-                ? "bg-brand-500 text-white hover:bg-brand-600 disabled:hover:bg-brand-500"
-                : "border border-border bg-white text-foreground hover:bg-surface disabled:hover:bg-white")
-            }
+            variant={plan.highlight ? "primary" : "secondary"}
+            className="w-full"
           >
             {ctaLabel}
-          </button>
+          </Button>
         </form>
       )}
 
       {downgradeBlocked && (
-        <p className="mt-3 text-center text-xs text-muted">
+        <p
+          className={
+            "mt-3 text-center text-xs " +
+            (plan.highlight ? "text-on-primary-container/80" : "text-muted")
+          }
+        >
           You've used {usedThisMonth} drink
           {usedThisMonth === 1 ? "" : "s"} this month — downgrade available on{" "}
           {nextResetLabel}.

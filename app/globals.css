@@ -2,26 +2,60 @@
 @import "leaflet/dist/leaflet.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0f1a14;
+  /* ── Zest & Flow palette ──
+     Neutrals + the brand scale are re-pointed to Zest greens so existing
+     brand/foreground utility classes adopt the new look automatically. */
+  --background: #fbf9f9; /* surface */
+  --foreground: #1b1c1c; /* on-surface */
   --brand-50: #f2fbe9;
   --brand-100: #e1f5cb;
-  --brand-200: #c4ea9b;
-  --brand-300: #9fd962;
-  --brand-400: #76c531;
-  --brand-500: #4ca50d;
-  --brand-600: #2b8700;
-  --brand-700: #216b00;
+  --brand-200: #d0ecb0; /* secondary-container */
+  --brand-300: #9fd962; /* primary-container / lime */
+  --brand-400: #9dd760; /* primary-fixed-dim */
+  --brand-500: #5a9e0a;
+  --brand-600: #3c6a00; /* primary / forest */
+  --brand-700: #2c5000;
   --brand-800: #1a5400;
-  --brand-900: #143f00;
+  --brand-900: #0f2000;
+  /* Accent retained (orange) for incidental highlights */
   --accent-50: #fff7ed;
   --accent-100: #ffedd5;
   --accent-500: #f97316;
   --accent-600: #ea580c;
   --accent-700: #c2410c;
-  --surface: #f7faf2;
-  --muted: #6b7280;
-  --border: #e5e7eb;
+  --surface: #f5f3f3; /* surface-container-low — subtle section/hover bg */
+  --muted: #424939; /* on-surface-variant */
+  --border: #c2c9b5; /* outline-variant */
+
+  /* ── Zest semantic tokens ── */
+  --primary: #3c6a00;
+  --on-primary: #ffffff;
+  --primary-container: #9fd962;
+  --on-primary-container: #355e00;
+  --secondary: #4e6536;
+  --on-secondary: #ffffff;
+  --secondary-container: #d0ecb0;
+  --on-secondary-container: #546b3b;
+  --tertiary: #5c6058;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #c6cac0;
+  --on-tertiary-container: #51554e;
+  --on-surface: #1b1c1c;
+  --on-surface-variant: #424939;
+  --outline: #737a68;
+  --outline-variant: #c2c9b5;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f5f3f3;
+  --surface-container: #efeded;
+  --surface-container-high: #e9e8e7;
+  --surface-container-highest: #e3e2e2;
+  --inverse-surface: #303031;
+  --inverse-on-surface: #f2f0f0;
+  --error: #ba1a1a;
+  --on-error: #ffffff;
+  --error-container: #ffdad6;
+  --on-error-container: #93000a;
+  --leaf-tray: #f4f7ed; /* product-image tray bg */
 }
 
 @theme inline {
@@ -45,8 +79,39 @@
   --color-surface: var(--surface);
   --color-muted: var(--muted);
   --color-border: var(--border);
+
+  /* Zest semantic colors */
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-secondary: var(--secondary);
+  --color-on-secondary: var(--on-secondary);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary-container: var(--on-secondary-container);
+  --color-tertiary: var(--tertiary);
+  --color-on-tertiary: var(--on-tertiary);
+  --color-tertiary-container: var(--tertiary-container);
+  --color-on-tertiary-container: var(--on-tertiary-container);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-inverse-surface: var(--inverse-surface);
+  --color-inverse-on-surface: var(--inverse-on-surface);
+  --color-error: var(--error);
+  --color-on-error: var(--on-error);
+  --color-error-container: var(--error-container);
+  --color-on-error-container: var(--on-error-container);
+  --color-leaf-tray: var(--leaf-tray);
+
   --font-sans: var(--font-inter);
-  --font-display: var(--font-inter);
+  --font-display: var(--font-jakarta);
 }
 
 html {
@@ -60,44 +125,73 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Headlines use Plus Jakarta Sans across the whole site. */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* Material Symbols icon defaults. */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  vertical-align: middle;
+  line-height: 1;
+  user-select: none;
+}
+.material-symbols-outlined.filled {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
 /* Consistent focus ring for interactive elements. */
 .focus-ring {
   outline: 2px solid transparent;
   outline-offset: 2px;
 }
 .focus-ring:focus-visible {
-  outline-color: var(--brand-500);
+  outline-color: var(--primary);
 }
 
-/* Gentle floating motion for decorative hero ingredients. */
-@keyframes nv-float {
-  0%,
-  100% {
-    transform: translateY(0) translateX(0) rotate(var(--nv-rot, 0deg));
-  }
-  50% {
-    transform: translateY(-26px) translateX(6px)
-      rotate(calc(var(--nv-rot, 0deg) + 12deg));
-  }
+/* Soft tonal lift for product/content cards (Zest elevation level 1). */
+.product-card-shadow {
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
-.nv-float {
-  animation: nv-float 6s ease-in-out infinite;
-  will-change: transform;
+.product-card-shadow:hover {
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
 }
 
-/* Calmer motion for grounded ingredients resting near the machine base. */
-@keyframes nv-bob {
-  0%,
-  100% {
-    transform: translateY(0) rotate(var(--nv-rot, 0deg));
-  }
-  50% {
-    transform: translateY(-7px) rotate(calc(var(--nv-rot, 0deg) + 2deg));
-  }
+/* Forest dot pattern for vending/locator feature sections. */
+.vending-pattern {
+  background-color: #3c6a00;
+  background-image: radial-gradient(#4e6536 1px, transparent 1px);
+  background-size: 20px 20px;
 }
-.nv-bob {
-  animation: nv-bob 6s ease-in-out infinite;
-  will-change: transform;
+
+/* Themed scrollbar (Zest). */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--secondary-container);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Continuous marquee for the partner strip on small screens.
@@ -154,7 +248,7 @@ body {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.18));
 }
 .nv-pin-active {
-  filter: drop-shadow(0 4px 8px rgba(33, 107, 0, 0.35));
+  filter: drop-shadow(0 4px 8px rgba(60, 106, 0, 0.4));
 }
 .leaflet-container {
   font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;

@@ -5,7 +5,8 @@ import Link from "next/link";
 import { Container, Section, Eyebrow, Card } from "@/components/ui";
 import { useCart, lineKey, type CartLine } from "@/components/cart-provider";
 import { products, getAddOn, sumAddOns } from "@/lib/data";
-import AddOnPicker from "@/components/add-on-picker";
+import CustomizeModal from "@/components/customize-modal";
+import Icon from "@/components/icon";
 
 export default function CartPage() {
   const { lines, hydrated, subtotal } = useCart();
@@ -25,16 +26,19 @@ export default function CartPage() {
     return (
       <Section>
         <Container>
+          <span className="mb-6 grid h-16 w-16 place-items-center rounded-full bg-secondary-container text-on-secondary-container">
+            <Icon name="shopping_cart" size={28} />
+          </span>
           <Eyebrow>Cart</Eyebrow>
-          <h1 className="mt-4 text-4xl font-semibold tracking-tight">
+          <h1 className="mt-4 text-4xl font-bold tracking-tight">
             Your cart is empty.
           </h1>
-          <p className="mt-4 text-muted max-w-xl">
+          <p className="mt-4 text-on-surface-variant max-w-xl">
             Add a smoothie, shake, or juice from the menu to get started.
           </p>
           <Link
             href="/menu"
-            className="mt-8 inline-flex h-11 items-center rounded-full bg-brand-500 px-5 text-sm font-medium text-white hover:bg-brand-600"
+            className="mt-8 inline-flex h-11 items-center rounded-full bg-primary px-5 text-sm font-medium text-on-primary hover:bg-brand-700"
           >
             Browse the menu
           </Link>
@@ -47,7 +51,7 @@ export default function CartPage() {
     <Section>
       <Container>
         <Eyebrow>Cart</Eyebrow>
-        <h1 className="mt-4 text-4xl font-semibold tracking-tight">
+        <h1 className="mt-4 text-4xl font-bold tracking-tight">
           Review your order
         </h1>
 
@@ -62,28 +66,28 @@ export default function CartPage() {
           </ul>
 
           <Card>
-            <h2 className="font-semibold">Order summary</h2>
+            <h2 className="font-bold tracking-tight">Order summary</h2>
             <dl className="mt-4 space-y-2 text-sm">
               <div className="flex justify-between">
-                <dt className="text-muted">Subtotal</dt>
-                <dd>${subtotal.toFixed(2)}</dd>
+                <dt className="text-on-surface-variant">Subtotal</dt>
+                <dd className="text-on-surface-variant">${subtotal.toFixed(2)}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-muted">Pickup fee</dt>
-                <dd>$0.00</dd>
+                <dt className="text-on-surface-variant">Pickup fee</dt>
+                <dd className="text-on-surface-variant">$0.00</dd>
               </div>
-              <div className="flex justify-between border-t border-border pt-3 font-semibold">
+              <div className="flex justify-between border-t border-outline-variant pt-3 font-bold">
                 <dt>Total</dt>
-                <dd>${subtotal.toFixed(2)}</dd>
+                <dd className="text-primary">${subtotal.toFixed(2)}</dd>
               </div>
             </dl>
             <Link
               href="/checkout"
-              className="mt-6 inline-flex h-11 w-full items-center justify-center rounded-full bg-brand-500 px-5 text-sm font-medium text-white hover:bg-brand-600"
+              className="mt-6 inline-flex h-11 w-full items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-on-primary hover:bg-brand-700"
             >
               Continue to checkout
             </Link>
-            <p className="mt-3 text-center text-xs text-muted">
+            <p className="mt-3 text-center text-xs text-on-surface-variant">
               You'll pick a pickup location next.
             </p>
           </Card>
@@ -104,7 +108,6 @@ function CartLineRow({ line }: { line: CartLine }) {
   const key = lineKey(line.productId, line.addOnIds);
   const unitPrice = product.price + sumAddOns(line.addOnIds);
   const lineTotal = unitPrice * line.quantity;
-  const draftUnitPrice = product.price + sumAddOns(draft);
 
   const openEditor = () => {
     setDraft(line.addOnIds);
@@ -122,8 +125,8 @@ function CartLineRow({ line }: { line: CartLine }) {
   };
 
   return (
-    <li className="flex gap-4 rounded-2xl border border-border bg-white p-4 shadow-sm">
-      <div className="h-20 w-20 flex-none overflow-hidden rounded-xl bg-brand-100/40">
+    <li className="product-card-shadow flex gap-4 rounded-xl bg-surface-container-lowest p-4">
+      <div className="h-20 w-20 flex-none overflow-hidden rounded-xl bg-secondary-container">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={product.image}
@@ -135,11 +138,11 @@ function CartLineRow({ line }: { line: CartLine }) {
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="font-semibold">{product.name}</p>
-            <p className="text-xs uppercase tracking-wide text-muted">
+            <p className="text-xs uppercase tracking-wide text-on-surface-variant">
               {product.category}
             </p>
             {line.addOnIds.length > 0 && (
-              <p className="mt-1 text-xs text-muted">
+              <p className="mt-1 text-xs text-on-surface-variant">
                 +{" "}
                 {line.addOnIds
                   .map((id) => getAddOn(id)?.name)
@@ -148,47 +151,29 @@ function CartLineRow({ line }: { line: CartLine }) {
               </p>
             )}
           </div>
-          <p className="text-sm font-semibold text-brand-700">
+          <p className="text-sm font-semibold text-primary">
             ${lineTotal.toFixed(2)}
           </p>
         </div>
 
-        {editing && (
-          <div className="mt-3">
-            <AddOnPicker selected={draft} onToggle={toggleDraft} />
-            <div className="mt-3 flex items-center justify-between gap-3">
-              <span className="text-xs text-muted">
-                ${draftUnitPrice.toFixed(2)} each
-              </span>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setEditing(false)}
-                  className="h-9 rounded-full px-4 text-sm font-medium text-muted hover:text-foreground"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={save}
-                  className="h-9 rounded-full bg-brand-500 px-4 text-sm font-medium text-white hover:bg-brand-600"
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        <CustomizeModal
+          product={product}
+          open={editing}
+          onClose={() => setEditing(false)}
+          selected={draft}
+          onToggle={toggleDraft}
+          onSave={save}
+        />
 
         <div className="mt-auto flex items-center justify-between pt-3">
-          <div className="inline-flex items-center rounded-full border border-border">
+          <div className="inline-flex items-center gap-2">
             <button
               type="button"
               onClick={() => updateQty(key, line.quantity - 1)}
               aria-label="Decrease quantity"
-              className="h-9 w-9 text-foreground/70 hover:text-foreground"
+              className="grid h-9 w-9 place-items-center rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container-low"
             >
-              −
+              <Icon name="remove" size={18} />
             </button>
             <span className="w-8 text-center text-sm font-medium">
               {line.quantity}
@@ -197,9 +182,9 @@ function CartLineRow({ line }: { line: CartLine }) {
               type="button"
               onClick={() => updateQty(key, line.quantity + 1)}
               aria-label="Increase quantity"
-              className="h-9 w-9 text-foreground/70 hover:text-foreground"
+              className="grid h-9 w-9 place-items-center rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container-low"
             >
-              +
+              <Icon name="add" size={18} />
             </button>
           </div>
           <div className="flex items-center gap-4">
@@ -207,7 +192,7 @@ function CartLineRow({ line }: { line: CartLine }) {
               <button
                 type="button"
                 onClick={openEditor}
-                className="text-sm text-brand-700 hover:text-brand-800"
+                className="text-sm text-primary hover:text-brand-700"
               >
                 Customize
               </button>
@@ -215,9 +200,10 @@ function CartLineRow({ line }: { line: CartLine }) {
             <button
               type="button"
               onClick={() => removeItem(key)}
-              className="text-sm text-muted hover:text-foreground"
+              aria-label="Remove item"
+              className="grid h-9 w-9 place-items-center rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container-low"
             >
-              Remove
+              <Icon name="delete" size={18} />
             </button>
           </div>
         </div>

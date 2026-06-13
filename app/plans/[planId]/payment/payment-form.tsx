@@ -28,7 +28,7 @@ export default function SubscriptionPaymentForm({ plan }: { plan: PlanSummary })
       <div className="space-y-10">
         <section>
           <h2 className="text-lg font-semibold">Card details</h2>
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 text-sm text-on-surface-variant">
             Your card will be charged ${plan.monthly.toFixed(2)} today and each
             month until you cancel.
           </p>
@@ -97,7 +97,7 @@ export default function SubscriptionPaymentForm({ plan }: { plan: PlanSummary })
                 }}
               />
             </div>
-            <p className="sm:col-span-2 text-xs text-muted">
+            <p className="sm:col-span-2 text-xs text-on-surface-variant">
               Demo only — no real charge. Any 13-19 digit number works.
             </p>
           </div>
@@ -108,14 +108,14 @@ export default function SubscriptionPaymentForm({ plan }: { plan: PlanSummary })
         <h2 className="font-semibold">Subscription summary</h2>
         <dl className="mt-5 space-y-2 text-sm">
           <div className="flex justify-between">
-            <dt className="text-muted">Plan</dt>
+            <dt className="text-on-surface-variant">Plan</dt>
             <dd className="font-medium">{plan.name}</dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-muted">Billed</dt>
+            <dt className="text-on-surface-variant">Billed</dt>
             <dd>${plan.monthly.toFixed(2)} / month</dd>
           </div>
-          <div className="flex justify-between border-t border-border pt-3 font-semibold">
+          <div className="flex justify-between border-t border-outline-variant pt-3 font-semibold">
             <dt>Due today</dt>
             <dd>${plan.monthly.toFixed(2)}</dd>
           </div>
@@ -124,7 +124,7 @@ export default function SubscriptionPaymentForm({ plan }: { plan: PlanSummary })
         {state.error && (
           <div
             role="alert"
-            className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700"
+            className="mt-4 rounded-xl bg-error-container px-4 py-3 text-sm text-on-error-container"
           >
             {state.error}
           </div>
@@ -133,13 +133,13 @@ export default function SubscriptionPaymentForm({ plan }: { plan: PlanSummary })
         <button
           type="submit"
           disabled={pending}
-          className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-brand-500 px-5 text-sm font-medium text-white hover:bg-brand-600 disabled:opacity-50"
+          className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-on-primary hover:bg-brand-700 disabled:opacity-50"
         >
           {pending
             ? "Processing…"
             : `Pay $${plan.monthly.toFixed(2)} & subscribe`}
         </button>
-        <p className="mt-3 text-center text-xs text-muted">
+        <p className="mt-3 text-center text-xs text-on-surface-variant">
           Demo — no real payment is collected.
         </p>
       </Card>

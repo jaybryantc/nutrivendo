@@ -33,17 +33,17 @@ export default function UserMenu({ user }: { user: CurrentUser }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex h-10 items-center gap-2 rounded-full border border-border bg-white pl-1.5 pr-3 hover:bg-surface"
+        className="inline-flex h-10 items-center gap-2 rounded-full border border-outline-variant bg-surface-container-lowest pl-1.5 pr-3 hover:bg-surface-container-low"
         aria-haspopup="menu"
         aria-expanded={open}
       >
-        <span className="grid h-7 w-7 place-items-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700">
+        <span className="grid h-7 w-7 place-items-center rounded-full bg-primary-container text-xs font-semibold text-on-primary-container">
           {initials || "U"}
         </span>
         <span className="text-sm font-medium hidden sm:inline">
           {user.first_name}
         </span>
-        <svg viewBox="0 0 24 24" className="h-4 w-4 text-muted" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg viewBox="0 0 24 24" className="h-4 w-4 text-on-surface-variant" fill="none" stroke="currentColor" strokeWidth="2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
         </svg>
       </button>
@@ -51,19 +51,19 @@ export default function UserMenu({ user }: { user: CurrentUser }) {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 mt-2 w-56 overflow-hidden rounded-2xl border border-border bg-white shadow-lg"
+          className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest shadow-lg"
         >
-          <div className="px-4 py-3 border-b border-border">
+          <div className="px-4 py-3 border-b border-outline-variant">
             <p className="text-sm font-medium">
               {user.first_name} {user.last_name}
             </p>
-            <p className="text-xs text-muted truncate">{user.email}</p>
+            <p className="text-xs text-on-surface-variant truncate">{user.email}</p>
           </div>
           <Link
             href="/orders"
             role="menuitem"
             onClick={() => setOpen(false)}
-            className="block px-4 py-2.5 text-sm hover:bg-surface"
+            className="block px-4 py-2.5 text-sm hover:bg-surface-container-low"
           >
             My orders
           </Link>
@@ -71,15 +71,15 @@ export default function UserMenu({ user }: { user: CurrentUser }) {
             href="/account"
             role="menuitem"
             onClick={() => setOpen(false)}
-            className="block px-4 py-2.5 text-sm hover:bg-surface"
+            className="block px-4 py-2.5 text-sm hover:bg-surface-container-low"
           >
             Account
           </Link>
-          <form action={logoutAction} className="border-t border-border">
+          <form action={logoutAction} className="border-t border-outline-variant">
             <button
               type="submit"
               role="menuitem"
-              className="w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-surface"
+              className="w-full text-left px-4 py-2.5 text-sm text-on-surface hover:bg-surface-container-low"
             >
               Log out
             </button>

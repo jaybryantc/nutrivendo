@@ -9,7 +9,7 @@ export default function Logo({ className = "" }: { className?: string }) {
       aria-label="NutriVendo home"
     >
       <Image
-        src="/nutrivendo-logo.jpeg"
+        src="/nutrivendo-logo.png"
         alt=""
         width={300}
         height={200}

@@ -31,7 +31,7 @@ const columns = [
 
 export default function Footer({ user }: { user: CurrentUser | null }) {
   return (
-    <footer className="border-t border-border bg-surface">
+    <footer className="border-t border-outline-variant bg-surface-container-lowest">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
           <div className="md:col-span-1">

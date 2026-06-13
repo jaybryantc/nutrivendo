@@ -27,10 +27,10 @@ export default async function SubscriptionPaymentPage({
     <Section>
       <Container>
         <Eyebrow>Subscription payment</Eyebrow>
-        <h1 className="mt-4 text-4xl font-semibold tracking-tight">
+        <h1 className="mt-4 text-4xl font-bold tracking-tight">
           Confirm your {plan.name} plan.
         </h1>
-        <p className="mt-4 text-muted max-w-2xl">
+        <p className="mt-4 text-on-surface-variant max-w-2xl">
           One last step — add a card to start your subscription. You can cancel
           anytime from your account.
         </p>

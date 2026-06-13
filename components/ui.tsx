@@ -31,7 +31,7 @@ export function Section({
 
 export function Eyebrow({ children }: { children: ReactNode }) {
   return (
-    <p className="inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-1 text-xs font-medium uppercase tracking-wide text-brand-700 ring-1 ring-brand-100">
+    <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-primary">
       {children}
     </p>
   );
@@ -47,7 +47,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-border bg-white p-6 shadow-sm",
+        "product-card-shadow rounded-xl bg-surface-container-lowest p-6",
         className
       )}
     >
@@ -61,17 +61,17 @@ type ButtonSize = "sm" | "md" | "lg";
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-brand-500 text-white hover:bg-brand-600 shadow-sm focus-visible:ring-brand-500/40",
+    "bg-primary text-on-primary hover:bg-brand-700 shadow-sm focus-visible:ring-primary/40",
   secondary:
-    "bg-white text-foreground border border-border hover:bg-surface focus-visible:ring-brand-500/30",
+    "bg-transparent text-primary border-2 border-primary hover:bg-brand-50 focus-visible:ring-primary/30",
   ghost:
-    "bg-transparent text-foreground hover:bg-surface focus-visible:ring-brand-500/30",
+    "bg-transparent text-primary hover:bg-brand-50 focus-visible:ring-primary/30",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: "h-9 px-3 text-sm rounded-full",
-  md: "h-10 px-4 text-sm rounded-full",
-  lg: "h-12 px-6 text-base rounded-full",
+  sm: "h-9 px-4 text-sm rounded-full",
+  md: "h-11 px-5 text-sm rounded-full",
+  lg: "h-12 px-8 text-base rounded-full",
 };
 
 export function Button({
@@ -103,7 +103,7 @@ export function Input({
   return (
     <input
       className={cn(
-        "w-full h-11 rounded-xl border border-border bg-white px-4 text-sm placeholder:text-muted focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20",
+        "w-full h-11 rounded-lg border border-outline-variant bg-surface-container-low px-4 text-sm placeholder:text-muted focus:border-primary focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary/20",
         className
       )}
       {...rest}
@@ -118,7 +118,7 @@ export function Textarea({
   return (
     <textarea
       className={cn(
-        "w-full rounded-xl border border-border bg-white px-4 py-3 text-sm placeholder:text-muted focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20",
+        "w-full rounded-lg border border-outline-variant bg-surface-container-low px-4 py-3 text-sm placeholder:text-muted focus:border-primary focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary/20",
         className
       )}
       {...rest}

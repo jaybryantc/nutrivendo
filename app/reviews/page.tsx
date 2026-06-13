@@ -1,17 +1,18 @@
 import { Container, Section, Eyebrow, Card } from "@/components/ui";
+import Icon from "@/components/icon";
 import { reviews } from "@/lib/data";
 
 function Stars({ n }: { n: number }) {
   return (
-    <div className="flex gap-0.5 text-brand-500" aria-label={`${n} out of 5 stars`}>
+    <div className="flex gap-0.5 text-primary" aria-label={`${n} out of 5 stars`}>
       {Array.from({ length: 5 }).map((_, i) => (
-        <svg
+        <Icon
           key={i}
-          viewBox="0 0 20 20"
-          className={i < n ? "h-4 w-4 fill-current" : "h-4 w-4 fill-current opacity-20"}
-        >
-          <path d="M10 1.5l2.6 5.5 6 .6-4.5 4.2 1.3 6L10 14.8 4.6 17.8l1.3-6L1.4 7.6l6-.6z" />
-        </svg>
+          name="star"
+          size={18}
+          filled
+          className={i < n ? "" : "opacity-20"}
+        />
       ))}
     </div>
   );
@@ -25,7 +26,7 @@ export default function ReviewsPage() {
 
   return (
     <>
-      <Section className="pb-0">
+      <Section className="pb-0 lg:pb-0 lg:pt-12">
         <Container>
           <Eyebrow>Reviews</Eyebrow>
           <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl max-w-3xl">
@@ -36,28 +37,29 @@ export default function ReviewsPage() {
               <p className="text-5xl font-semibold">{avg.toFixed(1)}</p>
               <Stars n={Math.round(avg)} />
             </div>
-            <div className="text-sm text-muted">
-              <p className="font-medium text-foreground">2,300+ reviews</p>
+            <div className="text-sm text-on-surface-variant">
+              <p className="font-medium text-on-surface">2,300+ reviews</p>
               <p>across all locations</p>
             </div>
           </div>
         </Container>
       </Section>
 
-      <Section>
+      <Section className="lg:pt-12">
         <Container>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {reviews.map((r) => (
-              <Card key={r.id}>
+              <Card key={r.id} className="flex flex-col">
+                <Icon name="format_quote" size={28} filled className="text-primary" />
                 <Stars n={r.rating} />
-                <p className="mt-4 text-sm text-foreground">"{r.body}"</p>
-                <div className="mt-5 flex items-center gap-3">
-                  <div className="grid h-9 w-9 place-items-center rounded-full bg-brand-100 text-sm font-medium text-brand-700">
+                <p className="mt-4 text-sm text-on-surface">"{r.body}"</p>
+                <div className="mt-auto flex items-center gap-3 pt-5">
+                  <div className="grid h-9 w-9 place-items-center rounded-full bg-primary-container text-sm font-medium text-on-primary-container">
                     {r.name.charAt(0)}
                   </div>
                   <div>
-                    <p className="text-sm font-medium">{r.name}</p>
-                    <p className="text-xs text-muted">{r.role}</p>
+                    <p className="text-sm font-medium text-on-surface">{r.name}</p>
+                    <p className="text-xs text-on-surface-variant">{r.role}</p>
                   </div>
                 </div>
               </Card>

@@ -13,7 +13,7 @@ import {
 import type { Location } from "@/lib/data";
 
 const pinSvg = (color: string) =>
-  `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="28" height="28"><path fill="${color}" d="M12 2c3.5 4.8 6 8.4 6 12a6 6 0 1 1-12 0c0-3.6 2.5-7.2 6-12z"/></svg>`;
+  `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="28" height="28"><path fill="${color}" transform="scale(1,-1) translate(0,-24)" d="M12 2c3.5 4.8 6 8.4 6 12a6 6 0 1 1-12 0c0-3.6 2.5-7.2 6-12z"/></svg>`;
 
 const baseIcon = L.divIcon({
   html: pinSvg("#4ca50d"),
@@ -98,8 +98,10 @@ export default function LocationsMapInner({
       className="h-full w-full"
     >
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank" rel="noreferrer">CARTO</a>'
+        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+        subdomains="abcd"
+        maxZoom={20}
       />
       {locations.map((loc) => (
         <Marker

@@ -2,7 +2,7 @@
 
 import { useActionState, useMemo, useState } from "react";
 import { Card, Input, Label } from "@/components/ui";
-import { useCart, lineKey } from "@/components/cart-provider";
+import { useCart, lineKey, type CartLine } from "@/components/cart-provider";
 import {
   locations,
   products,
@@ -10,6 +10,7 @@ import {
   getAddOn,
   sumAddOns,
 } from "@/lib/data";
+import CustomizeModal from "@/components/customize-modal";
 import { placeOrderAction, type CheckoutFormState } from "@/lib/actions/orders";
 
 type PlanContext = {
@@ -46,14 +47,14 @@ export default function CheckoutForm({ plan }: { plan: PlanContext }) {
   );
 
   if (!hydrated) {
-    return <p className="text-muted">Loading…</p>;
+    return <p className="text-on-surface-variant">Loading…</p>;
   }
 
   if (lines.length === 0) {
     return (
       <Card>
         <p className="font-semibold">Your cart is empty.</p>
-        <p className="mt-2 text-sm text-muted">
+        <p className="mt-2 text-sm text-on-surface-variant">
           Add a drink from the menu before checking out.
         </p>
       </Card>
@@ -82,7 +83,7 @@ export default function CheckoutForm({ plan }: { plan: PlanContext }) {
         {/* Payment method */}
         <section>
           <h2 className="text-lg font-semibold">Payment method</h2>
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 text-sm text-on-surface-variant">
             {plan
               ? hasAddOns
                 ? "Add-ons aren't covered by your plan — please pay by card."
@@ -109,7 +110,7 @@ export default function CheckoutForm({ plan }: { plan: PlanContext }) {
                 icon={
                   <svg
                     viewBox="0 0 24 24"
-                    className="h-5 w-5 text-brand-500"
+                    className="h-5 w-5 text-primary"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2.5"
@@ -131,7 +132,7 @@ export default function CheckoutForm({ plan }: { plan: PlanContext }) {
               icon={
                 <svg
                   viewBox="0 0 24 24"
-                  className="h-5 w-5 text-brand-500"
+                  className="h-5 w-5 text-primary"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -209,7 +210,7 @@ export default function CheckoutForm({ plan }: { plan: PlanContext }) {
                   }}
                 />
               </div>
-              <p className="sm:col-span-2 text-xs text-muted">
+              <p className="sm:col-span-2 text-xs text-on-surface-variant">
                 Demo only — no real charge. Any 13-19 digit number works.
               </p>
             </div>
@@ -219,7 +220,7 @@ export default function CheckoutForm({ plan }: { plan: PlanContext }) {
         {/* Pickup location */}
         <section>
           <h2 className="text-lg font-semibold">Pickup location</h2>
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 text-sm text-on-surface-variant">
             Choose where you'd like to grab your order.
           </p>
           <div className="mt-5 space-y-3">
@@ -229,8 +230,8 @@ export default function CheckoutForm({ plan }: { plan: PlanContext }) {
                 className={
                   "block cursor-pointer rounded-2xl border bg-white p-5 transition-colors " +
                   (locationId === loc.id
-                    ? "border-brand-500 ring-2 ring-brand-500/30"
-                    : "border-border hover:border-brand-200")
+                    ? "border-primary ring-2 ring-primary/30"
+                    : "border-outline-variant hover:border-primary/40")
                 }
               >
                 <input
@@ -243,22 +244,22 @@ export default function CheckoutForm({ plan }: { plan: PlanContext }) {
                 />
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-brand-700">
+                    <p className="text-xs font-medium uppercase tracking-wide text-primary">
                       {loc.type}
                     </p>
                     <p className="mt-1 font-semibold">{loc.name}</p>
-                    <p className="text-sm text-muted">
+                    <p className="text-sm text-on-surface-variant">
                       {loc.address}, {loc.city}
                     </p>
-                    <p className="mt-2 text-xs text-muted">{loc.hours}</p>
+                    <p className="mt-2 text-xs text-on-surface-variant">{loc.hours}</p>
                   </div>
                   <span
                     aria-hidden
                     className={
                       "mt-1 grid h-5 w-5 flex-none place-items-center rounded-full border " +
                       (locationId === loc.id
-                        ? "border-brand-500 bg-brand-500"
-                        : "border-border bg-white")
+                        ? "border-primary bg-primary"
+                        : "border-outline-variant bg-white")
                     }
                   >
                     {locationId === loc.id && (
@@ -274,52 +275,30 @@ export default function CheckoutForm({ plan }: { plan: PlanContext }) {
 
       <Card className="h-fit lg:sticky lg:top-20">
         <h2 className="font-semibold">Order summary</h2>
-        <ul className="mt-4 space-y-2 text-sm">
-          {lines.map((line) => {
-            const product = products.find((p) => p.id === line.productId);
-            if (!product) return null;
-            const key = lineKey(line.productId, line.addOnIds);
-            const unitPrice = product.price + sumAddOns(line.addOnIds);
-            const addOnNames = line.addOnIds
-              .map((id) => getAddOn(id)?.name)
-              .filter(Boolean)
-              .join(", ");
-            return (
-              <li key={key} className="flex items-start justify-between gap-3">
-                <span className="min-w-0">
-                  <span className="truncate">
-                    {product.name}{" "}
-                    <span className="text-muted">× {line.quantity}</span>
-                  </span>
-                  {addOnNames && (
-                    <span className="block text-xs text-muted">
-                      + {addOnNames}
-                    </span>
-                  )}
-                </span>
-                <span className="font-medium">
-                  ${(unitPrice * line.quantity).toFixed(2)}
-                </span>
-              </li>
-            );
-          })}
+        <ul className="mt-4 space-y-3 text-sm">
+          {lines.map((line) => (
+            <SummaryLine
+              key={lineKey(line.productId, line.addOnIds)}
+              line={line}
+            />
+          ))}
         </ul>
-        <dl className="mt-5 space-y-2 border-t border-border pt-4 text-sm">
+        <dl className="mt-5 space-y-2 border-t border-outline-variant pt-4 text-sm">
           <div className="flex justify-between">
-            <dt className="text-muted">Subtotal</dt>
+            <dt className="text-on-surface-variant">Subtotal</dt>
             <dd>${subtotal.toFixed(2)}</dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-muted">Pickup fee</dt>
+            <dt className="text-on-surface-variant">Pickup fee</dt>
             <dd>$0.00</dd>
           </div>
           {effectiveMethod === "plan" && (
-            <div className="flex justify-between text-brand-700">
+            <div className="flex justify-between text-primary">
               <dt>Covered by plan</dt>
               <dd>−${subtotal.toFixed(2)}</dd>
             </div>
           )}
-          <div className="flex justify-between border-t border-border pt-3 font-semibold">
+          <div className="flex justify-between border-t border-outline-variant pt-3 font-semibold">
             <dt>Due now</dt>
             <dd>
               {effectiveMethod === "plan"
@@ -332,7 +311,7 @@ export default function CheckoutForm({ plan }: { plan: PlanContext }) {
         {state.error && (
           <div
             role="alert"
-            className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700"
+            className="mt-4 rounded-xl bg-error-container px-4 py-3 text-sm text-on-error-container"
           >
             {state.error}
           </div>
@@ -341,15 +320,81 @@ export default function CheckoutForm({ plan }: { plan: PlanContext }) {
         <button
           type="submit"
           disabled={pending}
-          className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-brand-500 px-5 text-sm font-medium text-white hover:bg-brand-600 disabled:opacity-50"
+          className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-on-primary hover:bg-brand-700 disabled:opacity-50"
         >
           {pending ? "Placing order…" : submitLabel}
         </button>
-        <p className="mt-3 text-center text-xs text-muted">
+        <p className="mt-3 text-center text-xs text-on-surface-variant">
           Demo — no real payment is collected.
         </p>
       </Card>
     </form>
+  );
+}
+
+function SummaryLine({ line }: { line: CartLine }) {
+  const { updateAddOns } = useCart();
+  const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState<string[]>(line.addOnIds);
+
+  const product = products.find((p) => p.id === line.productId);
+  if (!product) return null;
+
+  const key = lineKey(line.productId, line.addOnIds);
+  const unitPrice = product.price + sumAddOns(line.addOnIds);
+  const addOnNames = line.addOnIds
+    .map((id) => getAddOn(id)?.name)
+    .filter(Boolean)
+    .join(", ");
+
+  const openEditor = () => {
+    setDraft(line.addOnIds);
+    setOpen(true);
+  };
+
+  const toggleDraft = (id: string) =>
+    setDraft((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+
+  const save = () => {
+    updateAddOns(key, draft);
+    setOpen(false);
+  };
+
+  return (
+    <li className="flex items-start justify-between gap-3">
+      <span className="min-w-0">
+        <span className="truncate">
+          {product.name}{" "}
+          <span className="text-on-surface-variant">× {line.quantity}</span>
+        </span>
+        {addOnNames && (
+          <span className="block text-xs text-on-surface-variant">
+            + {addOnNames}
+          </span>
+        )}
+        <button
+          type="button"
+          onClick={openEditor}
+          className="mt-1 block text-xs font-medium text-primary hover:text-brand-700"
+        >
+          Customize
+        </button>
+      </span>
+      <span className="font-medium">
+        ${(unitPrice * line.quantity).toFixed(2)}
+      </span>
+
+      <CustomizeModal
+        product={product}
+        open={open}
+        onClose={() => setOpen(false)}
+        selected={draft}
+        onToggle={toggleDraft}
+        onSave={save}
+      />
+    </li>
   );
 }
 
@@ -377,32 +422,32 @@ function PaymentOption({
       className={
         "block w-full text-left rounded-2xl border bg-white p-4 transition-colors " +
         (checked
-          ? "border-brand-500 ring-2 ring-brand-500/30"
-          : "border-border hover:border-brand-200")
+          ? "border-primary ring-2 ring-primary/30"
+          : "border-outline-variant hover:border-primary/40")
       }
     >
       <div className="flex items-start gap-3">
-        <span className="grid h-10 w-10 flex-none place-items-center rounded-xl bg-brand-50">
+        <span className="grid h-10 w-10 flex-none place-items-center rounded-xl bg-secondary-container">
           {icon}
         </span>
         <div className="flex-1">
           <div className="flex items-center justify-between gap-3">
             <p className="font-semibold">{title}</p>
             {badge && (
-              <span className="rounded-full bg-brand-50 px-2 py-0.5 text-[11px] font-medium text-brand-700">
+              <span className="rounded-full bg-secondary-container px-2 py-0.5 text-[11px] font-medium text-primary">
                 {badge}
               </span>
             )}
           </div>
-          <p className="mt-0.5 text-sm text-muted">{subtitle}</p>
+          <p className="mt-0.5 text-sm text-on-surface-variant">{subtitle}</p>
         </div>
         <span
           aria-hidden
           className={
             "mt-1 grid h-5 w-5 flex-none place-items-center rounded-full border " +
             (checked
-              ? "border-brand-500 bg-brand-500"
-              : "border-border bg-white")
+              ? "border-primary bg-primary"
+              : "border-outline-variant bg-white")
           }
         >
           {checked && <span className="h-2 w-2 rounded-full bg-white" />}

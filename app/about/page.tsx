@@ -1,4 +1,5 @@
 import { Container, Section, Eyebrow, Card } from "@/components/ui";
+import Icon from "@/components/icon";
 
 const milestones = [
   {
@@ -33,13 +34,13 @@ const team = [
 export default function AboutPage() {
   return (
     <>
-      <Section className="pb-0">
+      <Section className="pb-0 lg:pb-0 lg:pt-12">
         <Container>
           <Eyebrow>About NutriVendo</Eyebrow>
           <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl max-w-3xl">
             We started NutriVendo because the only fast drink shouldn't be soda.
           </h1>
-          <p className="mt-6 text-lg text-muted max-w-2xl">
+          <p className="mt-6 text-lg text-on-surface-variant max-w-2xl">
             We build smart vending machines that blend, pour, and serve fresh
             smoothies, shakes, and juices — using whole ingredients, in 60
             seconds, in the places you spend your day.
@@ -47,36 +48,42 @@ export default function AboutPage() {
         </Container>
       </Section>
 
-      <Section>
+      <Section className="lg:pt-12">
         <Container>
           <div className="grid gap-10 md:grid-cols-3">
             {[
               {
+                icon: "eco",
                 title: "Real ingredients only",
                 body:
                   "If we wouldn't eat it at home, it doesn't go in the machine. Whole fruit, leafy greens, nut butters, clean protein.",
               },
               {
+                icon: "bolt",
                 title: "Fast, but not fast food",
                 body:
                   "We obsess over the 60-second pour without compromising what's inside the cup. Freshly blended, never pre-mixed.",
               },
               {
+                icon: "local_florist",
                 title: "Local and growing",
                 body:
                   "We work with Canadian growers and roasters. Our menus rotate with what's actually in season.",
               },
             ].map((v) => (
               <Card key={v.title}>
-                <h3 className="text-lg font-semibold">{v.title}</h3>
-                <p className="mt-3 text-sm text-muted">{v.body}</p>
+                <div className="grid h-12 w-12 place-items-center rounded-2xl bg-primary-container text-on-primary-container">
+                  <Icon name={v.icon} size={24} filled />
+                </div>
+                <h3 className="mt-5 text-lg font-semibold tracking-tight">{v.title}</h3>
+                <p className="mt-3 text-sm text-on-surface-variant">{v.body}</p>
               </Card>
             ))}
           </div>
         </Container>
       </Section>
 
-      <Section className="bg-surface">
+      <Section className="bg-surface-container-low">
         <Container>
           <div className="max-w-2xl">
             <Eyebrow>Our story</Eyebrow>
@@ -87,9 +94,11 @@ export default function AboutPage() {
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {milestones.map((m) => (
               <Card key={m.year}>
-                <p className="text-sm font-semibold text-brand-700">{m.year}</p>
-                <h3 className="mt-2 font-semibold">{m.title}</h3>
-                <p className="mt-2 text-sm text-muted">{m.body}</p>
+                <span className="inline-flex rounded-full bg-secondary-container px-3 py-1 text-xs font-medium text-on-secondary-container">
+                  {m.year}
+                </span>
+                <h3 className="mt-3 font-semibold tracking-tight">{m.title}</h3>
+                <p className="mt-2 text-sm text-on-surface-variant">{m.body}</p>
               </Card>
             ))}
           </div>
@@ -107,11 +116,11 @@ export default function AboutPage() {
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {team.map((p) => (
               <Card key={p.name} className="text-center">
-                <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-brand-100 text-2xl font-semibold text-brand-700">
+                <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-primary-container text-2xl font-semibold text-on-primary-container">
                   {p.initials}
                 </div>
-                <p className="mt-4 font-semibold">{p.name}</p>
-                <p className="text-sm text-muted">{p.role}</p>
+                <p className="mt-4 font-semibold tracking-tight">{p.name}</p>
+                <p className="text-sm text-on-surface-variant">{p.role}</p>
               </Card>
             ))}
           </div>

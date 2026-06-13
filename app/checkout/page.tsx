@@ -23,7 +23,7 @@ export default async function CheckoutPage() {
         <h1 className="mt-4 text-4xl font-semibold tracking-tight">
           One step away.
         </h1>
-        <p className="mt-4 text-muted max-w-2xl">
+        <p className="mt-4 text-on-surface-variant max-w-2xl">
           Pick where you'd like to grab your order, then choose how to pay.
         </p>
         <div className="mt-10">

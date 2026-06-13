@@ -24,7 +24,7 @@ export default function LoginPage() {
           Don't have an account?{" "}
           <Link
             href={`/register${next !== "/menu" ? `?next=${encodeURIComponent(next)}` : ""}`}
-            className="font-medium text-brand-700 hover:text-brand-800"
+            className="font-medium text-primary hover:text-brand-700"
           >
             Create one
           </Link>
@@ -36,7 +36,7 @@ export default function LoginPage() {
         {state.error && (
           <div
             role="alert"
-            className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700"
+            className="rounded-xl bg-error-container px-4 py-3 text-sm text-on-error-container"
           >
             {state.error}
           </div>
@@ -57,7 +57,7 @@ export default function LoginPage() {
             <Label htmlFor="password">Password</Label>
             <Link
               href="/forgot-password"
-              className="text-xs text-brand-700 hover:text-brand-800"
+              className="text-xs text-primary hover:text-brand-700"
             >
               Forgot password?
             </Link>
