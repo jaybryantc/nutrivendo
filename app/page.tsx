@@ -500,7 +500,7 @@ function planSavings(planId: string): string {
     case "fuel":
       return "Save 20% per drink";
     case "athlete":
-      return "Save 30% on guest drinks";
+      return "Save 30% per drink";
     default:
       return "";
   }

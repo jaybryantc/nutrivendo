@@ -427,8 +427,6 @@ export const plans: Plan[] = [
     features: [
       "4 drinks per month",
       "Save 10% per drink",
-      "Access to any NutriVendo machine",
-      "Rollover up to 2 drinks",
     ],
     cta: "Start with Starter",
   },
@@ -443,9 +441,6 @@ export const plans: Plan[] = [
     features: [
       "10 drinks per month",
       "Save 20% per drink",
-      "Early access to seasonal flavors",
-      "Free swap on any drink, no questions",
-      "Priority restocking notifications",
     ],
     cta: "Get Fuel",
   },
@@ -458,10 +453,7 @@ export const plans: Plan[] = [
     monthlyQuota: ATHLETE_QUOTA,
     features: [
       "Unlimited drinks (fair-use)",
-      "Save 30% on guest drinks",
-      "Custom blends by request",
-      "1-on-1 nutrition consult quarterly",
-      "Exclusive merch drop",
+      "Save 30% per drink",
     ],
     cta: "Go Athlete",
   },
