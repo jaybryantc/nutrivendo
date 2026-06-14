@@ -100,14 +100,14 @@ export default async function HomePage() {
                   className="focus-ring inline-flex min-h-[56px] items-center gap-2.5 rounded-full bg-primary px-9 text-base font-semibold text-on-primary shadow-lg shadow-primary/25 transition-all hover:bg-brand-700 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 active:translate-y-0"
                 >
                   <Icon name="location_on" size={20} />
-                  Find a Machine
+                  Find a Machine Near You
                 </Link>
                 <Link
                   href="/menu"
                   className="focus-ring inline-flex min-h-[56px] items-center gap-2.5 rounded-full border-2 border-primary bg-transparent px-9 text-base font-semibold text-primary transition-all hover:bg-brand-50 hover:-translate-y-0.5 active:translate-y-0"
                 >
                   <Icon name="local_drink" size={20} />
-                  Explore Menu
+                  Explore Healthy Drinks
                 </Link>
               </div>
 

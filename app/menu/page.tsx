@@ -26,12 +26,11 @@ export default function MenuPage() {
         <Container>
           <Eyebrow>The menu</Eyebrow>
           <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
-            Fresh blends, every weekday.
+            Fresh Smoothies and Healthy Drinks,{" "}Available Anytime
           </h1>
           <p className="mt-4 text-muted max-w-2xl">
-            Made with real fruit, leafy greens, and clean protein. Tap the
-            category to filter, then customize with add-ons before you add to
-            cart.
+            Discover convenient, fresh, and functional beverages designed to 
+            support energy, wellness, and everyday nutrition.
           </p>
         </Container>
       </Section>
