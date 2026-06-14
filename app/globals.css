@@ -252,6 +252,15 @@ h4 {
   -webkit-text-fill-color: transparent;
 }
 
+/* Deeper all-green headline gradient — stays legible on light surfaces and
+   reads cohesively alongside dark heading/body text (no washed-out lime). */
+.nv-text-gradient-forest {
+  background: linear-gradient(120deg, var(--brand-700) 0%, var(--brand-600) 45%, var(--brand-500) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 /* Floating badge animation for hero decorative elements. */
 @keyframes nv-float {
   0%, 100% { transform: translateY(0); }
