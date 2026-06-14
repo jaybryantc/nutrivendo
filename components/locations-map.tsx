@@ -21,7 +21,7 @@ export default function LocationsMap(props: {
   return (
     <div
       className={
-        "relative overflow-hidden rounded-3xl border border-border bg-surface " +
+        "relative isolate overflow-hidden rounded-3xl border border-border bg-surface " +
         (className ?? "")
       }
     >

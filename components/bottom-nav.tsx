@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Icon from "./icon";
-import { useCart } from "./cart-provider";
 import { navLinks } from "@/lib/data";
 import { cn } from "@/lib/cn";
 import { logoutAction } from "@/lib/actions/auth";
@@ -25,7 +24,6 @@ const moreLinks = navLinks.filter(
 
 export default function BottomNav({ user }: { user: CurrentUser | null }) {
   const pathname = usePathname();
-  const { count, hydrated } = useCart();
   const [moreOpen, setMoreOpen] = useState(false);
   const closeMore = () => setMoreOpen(false);
 
@@ -146,16 +144,9 @@ export default function BottomNav({ user }: { user: CurrentUser | null }) {
             );
           })}
 
-          <Link href="/cart" className={tabClass(isActive("/cart"))}>
-            <span className="relative inline-flex">
-              <Icon name="shopping_cart" size={24} filled={isActive("/cart")} />
-              {hydrated && count > 0 && (
-                <span className="absolute -top-1.5 -right-2 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-on-primary">
-                  {count}
-                </span>
-              )}
-            </span>
-            Cart
+          <Link href="/locations" className={tabClass(isActive("/locations"))}>
+            <Icon name="location_on" size={24} filled={isActive("/locations")} />
+            Locations
           </Link>
 
           <button

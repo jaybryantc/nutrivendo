@@ -88,8 +88,8 @@ export default async function HomePage() {
                 </div>
               )}
               <h1 className="font-display text-5xl font-extrabold leading-[1.01] tracking-tight text-on-surface sm:text-6xl lg:text-[4.5rem]">
-                Fresh Nutrition,{" "}
-                <span className="nv-text-gradient">Instantly.</span>
+                Fresh Nutrition Made{" "}
+                <span className="text-primary">Instantly.</span>
               </h1>
               <p className="mt-6 max-w-lg text-lg leading-relaxed text-on-surface-variant sm:text-xl">
                 Real-ingredient smoothies, shakes, and juices blended fresh
@@ -113,9 +113,12 @@ export default async function HomePage() {
               </div>
 
               {/* Trust stats row */}
-              <div className="mt-12 flex flex-wrap items-center gap-8 sm:gap-10">
+              <div className="mt-12 grid grid-cols-3 gap-3 sm:flex sm:flex-wrap sm:items-center sm:gap-10">
                 {heroStats.map((item, i) => (
-                  <div key={item.label[0]} className="flex items-center gap-3.5">
+                  <div
+                    key={item.label[0]}
+                    className="flex flex-col items-center gap-2 text-center sm:flex-row sm:items-center sm:gap-3.5 sm:text-left"
+                  >
                     <span className="inline-flex h-12 w-12 flex-none items-center justify-center rounded-2xl bg-primary-container text-on-primary-container shadow-sm">
                       <Icon name={item.icon} size={22} filled />
                     </span>
@@ -233,22 +236,12 @@ export default async function HomePage() {
             </div>
           </Reveal>
 
-          <div className="relative mt-16 grid gap-8 md:grid-cols-3">
-            {/* Connecting line between steps (desktop) */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute left-[16.67%] right-[16.67%] top-12 hidden h-px bg-gradient-to-r from-primary/0 via-primary/30 to-primary/0 md:block"
-            />
+          <div className="mt-14 grid gap-12 md:grid-cols-3">
             {howItWorks.map((step, i) => (
               <Reveal key={step.title} delay={i * 100}>
                 <div className="group text-center">
-                  <div className="relative mx-auto mb-6">
-                    <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-3xl bg-primary-container text-on-primary-container transition-all group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary-container/40">
-                      <Icon name={step.icon} size={40} filled />
-                    </div>
-                    <span className="absolute -top-1 -right-1 grid h-7 w-7 place-items-center rounded-full bg-primary text-xs font-bold text-on-primary shadow-sm">
-                      {i + 1}
-                    </span>
+                  <div className="mx-auto mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-primary-container text-on-primary-container transition-transform group-hover:scale-110">
+                    <Icon name={step.icon} size={40} filled />
                   </div>
                   <h3 className="text-xl font-semibold">{step.title}</h3>
                   <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-on-surface-variant">
@@ -513,28 +506,24 @@ export default async function HomePage() {
       <Section className="pb-24">
         <Container>
           <Reveal>
-            <div className="nv-cta-section relative overflow-hidden rounded-[2rem] px-8 py-16 text-center sm:px-16 sm:py-20">
-              <div aria-hidden className="nv-cta-glow pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full bg-white/10 blur-[80px]" />
-              <div aria-hidden className="nv-cta-glow pointer-events-none absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-primary-container/15 blur-[60px]" />
-              <h2 className="relative font-display text-3xl font-bold tracking-tight text-white sm:text-5xl">
-                Ready to upgrade
-                <br className="hidden sm:block" />
-                {" "}your default drink?
+            <div className="vending-pattern relative overflow-hidden rounded-[2rem] px-8 py-14 text-center sm:px-16">
+              <h2 className="relative text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                Ready to upgrade your default drink?
               </h2>
-              <p className="relative mx-auto mt-5 max-w-xl leading-relaxed text-white/80 sm:text-lg">
+              <p className="relative mx-auto mt-3 max-w-xl leading-relaxed text-white/80">
                 Join thousands of sippers who&apos;ve replaced the
                 vending-machine soda with something their body actually wants.
               </p>
-              <div className="relative mt-8 flex flex-wrap justify-center gap-4">
+              <div className="relative mt-7 flex flex-wrap justify-center gap-3">
                 <Link
                   href="/register"
-                  className="focus-ring inline-flex min-h-[56px] items-center rounded-full bg-white px-9 text-base font-semibold text-primary shadow-xl transition-all hover:bg-surface-container hover:-translate-y-0.5 hover:shadow-2xl"
+                  className="focus-ring inline-flex min-h-[56px] items-center rounded-full bg-white px-8 text-base font-semibold text-primary transition-colors hover:bg-surface-container"
                 >
                   {user ? "Manage your account" : "Create your account"}
                 </Link>
                 <Link
                   href="/locations"
-                  className="focus-ring inline-flex min-h-[56px] items-center rounded-full border-2 border-white/40 bg-white/5 px-9 text-base font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/15 hover:-translate-y-0.5"
+                  className="focus-ring inline-flex min-h-[56px] items-center rounded-full border-2 border-white/40 px-8 text-base font-semibold text-white transition-colors hover:bg-white/10"
                 >
                   Find your nearest machine
                 </Link>
