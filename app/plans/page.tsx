@@ -10,10 +10,6 @@ const faqs = [
     a: "Yes. Cancel in one tap from your account. We don't do dark patterns.",
   },
   {
-    q: "Do unused drinks roll over?",
-    a: "Starter rolls over up to 2 drinks each month. Fuel rolls over up to 5. Athlete is fair-use and uncapped.",
-  },
-  {
     q: "Can I use my plan at any machine?",
     a: "Yes — your plan works at every NutriVendo machine, and we add new locations regularly.",
   },
