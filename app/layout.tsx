@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
@@ -29,6 +29,10 @@ export const metadata: Metadata = {
   },
   description:
     "Your on-the-go source for delicious and healthy smoothies, shakes, and juices, conveniently available through smart vending machines.",
+  manifest: "/manifest.json",
+  applicationName: "NutriVendo",
+  appleWebApp: { capable: true, title: "NutriVendo", statusBarStyle: "default" },
+  formatDetection: { telephone: false },
   openGraph: {
     title: "NutriVendo",
     description:
@@ -43,6 +47,13 @@ export const metadata: Metadata = {
     description:
       "Your on-the-go source for delicious and healthy smoothies, shakes, and juices, conveniently available through smart vending machines.",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#3c6a00",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover", // makes env(safe-area-inset-bottom) on <body> resolve on notched devices
 };
 
 export default async function RootLayout({
