@@ -10,6 +10,7 @@ import { registerAction, type AuthFormState } from "@/lib/actions/auth";
 export default function RegisterPage() {
   const params = useSearchParams();
   const next = params.get("next") ?? "/menu";
+  const promo = params.get("promo") ?? "";
   const [state, formAction, pending] = useActionState<AuthFormState, FormData>(
     registerAction,
     {}
@@ -18,7 +19,11 @@ export default function RegisterPage() {
   return (
     <AuthShell
       title="Create your NutriVendo account"
-      subtitle="Free to join. Plans start whenever you're ready."
+      subtitle={
+        promo === "welcome20"
+          ? "Free to join — and we'll take 20% off your first drink."
+          : "Free to join. Plans start whenever you're ready."
+      }
       footer={
         <>
           Already have an account?{" "}
@@ -33,6 +38,7 @@ export default function RegisterPage() {
     >
       <form action={formAction} className="space-y-4">
         <input type="hidden" name="next" value={next} />
+        <input type="hidden" name="promo" value={promo} />
         {state.error && (
           <div
             role="alert"

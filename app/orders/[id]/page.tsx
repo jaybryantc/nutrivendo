@@ -48,6 +48,8 @@ export default async function OrderDetailPage({
   if (!order || order.user_id !== user.id) notFound();
 
   const items = await getOrderItems(order.id);
+  // Discount applies to the subtotal before tax; net drives all order math.
+  const net = order.subtotal_cents - order.discount_cents;
   const location = locations.find((l) => l.id === order.location_id);
   const date = new Date(order.created_at);
   const qrSvg = await qrToSvg(order.pickup_code);
@@ -144,10 +146,20 @@ export default async function OrderDetailPage({
                 <dt className="text-on-surface-variant">Subtotal</dt>
                 <dd className="text-on-surface-variant">${(order.subtotal_cents / 100).toFixed(2)}</dd>
               </div>
+              {order.discount_cents > 0 && (
+                <div className="flex justify-between text-primary">
+                  <dt>First-order discount (20% off one drink)</dt>
+                  <dd>−${(order.discount_cents / 100).toFixed(2)}</dd>
+                </div>
+              )}
+              <div className="flex justify-between">
+                <dt className="text-on-surface-variant">Tax (13%)</dt>
+                <dd className="text-on-surface-variant">${((net * 0.13) / 100).toFixed(2)}</dd>
+              </div>
               {order.paid_with === "plan" && (
                 <div className="flex justify-between text-primary">
                   <dt>Covered by plan</dt>
-                  <dd>−${(order.subtotal_cents / 100).toFixed(2)}</dd>
+                  <dd>−${((net * 1.13) / 100).toFixed(2)}</dd>
                 </div>
               )}
               <div className="flex justify-between border-t border-outline-variant pt-3 font-bold">
@@ -155,7 +167,7 @@ export default async function OrderDetailPage({
                 <dd className="text-primary">
                   {order.paid_with === "plan"
                     ? "$0.00"
-                    : `$${(order.subtotal_cents / 100).toFixed(2)}`}
+                    : `$${((net * 1.13) / 100).toFixed(2)}`}
                 </dd>
               </div>
               <div className="flex justify-between border-t border-outline-variant pt-3">

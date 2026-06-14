@@ -459,36 +459,38 @@ export default async function HomePage() {
         </Container>
       </Section>
 
-      {/* ───────────── Final CTA ───────────── */}
-      <Section className="pb-24">
-        <Container>
-          <Reveal>
-            <div className="vending-pattern relative overflow-hidden rounded-[2rem] px-8 py-14 text-center sm:px-16">
-              <h2 className="relative text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                Ready to upgrade your default drink?
-              </h2>
-              <p className="relative mx-auto mt-3 max-w-xl leading-relaxed text-white/80">
-                Join thousands of sippers who&apos;ve replaced the
-                vending-machine soda with something their body actually wants.
-              </p>
-              <div className="relative mt-7 flex flex-wrap justify-center gap-3">
-                <Link
-                  href="/register"
-                  className="focus-ring inline-flex min-h-[56px] items-center rounded-full bg-white px-8 text-base font-semibold text-primary transition-colors hover:bg-surface-container"
-                >
-                  {user ? "Manage your account" : "Create your account"}
-                </Link>
-                <Link
-                  href="/locations"
-                  className="focus-ring inline-flex min-h-[56px] items-center rounded-full border-2 border-white/40 px-8 text-base font-semibold text-white transition-colors hover:bg-white/10"
-                >
-                  Find your nearest machine
-                </Link>
+      {/* ───────────── Final CTA — welcome offer, logged-out only ───────────── */}
+      {!user && (
+        <Section className="pb-24">
+          <Container>
+            <Reveal>
+              <div className="vending-pattern relative overflow-hidden rounded-[2rem] px-8 py-14 text-center sm:px-16">
+                <h2 className="relative text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                  Get 20% off your first NutriVendo drink
+                </h2>
+                <p className="relative mx-auto mt-3 max-w-xl leading-relaxed text-white/80">
+                  Create a free account and we&apos;ll take 20% off your first
+                  drink — no code needed.
+                </p>
+                <div className="relative mt-7 flex flex-wrap justify-center gap-3">
+                  <Link
+                    href="/register?promo=welcome20"
+                    className="focus-ring inline-flex min-h-[56px] items-center rounded-full bg-white px-8 text-base font-semibold text-primary transition-colors hover:bg-surface-container"
+                  >
+                    Claim My 20% Off
+                  </Link>
+                  <Link
+                    href="/locations"
+                    className="focus-ring inline-flex min-h-[56px] items-center rounded-full border-2 border-white/40 px-8 text-base font-semibold text-white transition-colors hover:bg-white/10"
+                  >
+                    Find your nearest machine
+                  </Link>
+                </div>
               </div>
-            </div>
-          </Reveal>
-        </Container>
-      </Section>
+            </Reveal>
+          </Container>
+        </Section>
+      )}
     </>
   );
 }

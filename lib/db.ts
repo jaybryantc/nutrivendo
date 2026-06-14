@@ -27,6 +27,8 @@ export type UserRow = {
   first_name: string;
   last_name: string;
   created_at: string;
+  /** 1 if the account is eligible for the one-time 20% first-order discount. */
+  welcome_discount: number;
 };
 
 export type OrderPaidWith = "plan" | "card";
@@ -37,6 +39,8 @@ export type OrderRow = {
   location_id: string;
   pickup_code: string;
   subtotal_cents: number;
+  /** Discount applied to the subtotal before tax (cents); 0 when none. */
+  discount_cents: number;
   status: "placed" | "ready" | "completed";
   created_at: string;
   paid_with: OrderPaidWith;
@@ -96,10 +100,11 @@ export async function createUser(input: {
   password_hash: string;
   first_name: string;
   last_name: string;
+  welcome_discount?: number;
 }): Promise<void> {
   await db.execute({
-    sql: `INSERT INTO users (id, email, password_hash, first_name, last_name, created_at)
-          VALUES (?, ?, ?, ?, ?, ?)`,
+    sql: `INSERT INTO users (id, email, password_hash, first_name, last_name, created_at, welcome_discount)
+          VALUES (?, ?, ?, ?, ?, ?, ?)`,
     args: [
       input.id,
       input.email.toLowerCase(),
@@ -107,6 +112,7 @@ export async function createUser(input: {
       input.first_name,
       input.last_name,
       new Date().toISOString(),
+      input.welcome_discount ?? 0,
     ],
   });
 }
@@ -156,6 +162,7 @@ export type InsertOrderInput = {
   location_id: string;
   pickup_code: string;
   subtotal_cents: number;
+  discount_cents: number;
   status: OrderRow["status"];
   created_at: string;
   paid_with: OrderPaidWith;
@@ -171,15 +178,16 @@ export async function insertOrderTxn(
     [
       {
         sql: `INSERT INTO orders (
-                id, user_id, location_id, pickup_code, subtotal_cents, status, created_at,
+                id, user_id, location_id, pickup_code, subtotal_cents, discount_cents, status, created_at,
                 paid_with, card_last4, subscription_id
-              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         args: [
           order.id,
           order.user_id,
           order.location_id,
           order.pickup_code,
           order.subtotal_cents,
+          order.discount_cents,
           order.status,
           order.created_at,
           order.paid_with,
@@ -187,6 +195,16 @@ export async function insertOrderTxn(
           order.subscription_id,
         ] satisfies InValue[],
       },
+      // The welcome discount is one-time: consume it in the same transaction
+      // that records the order it applied to.
+      ...(order.discount_cents > 0
+        ? [
+            {
+              sql: `UPDATE users SET welcome_discount = 0 WHERE id = ?`,
+              args: [order.user_id] satisfies InValue[],
+            },
+          ]
+        : []),
       ...items.map((i) => ({
         sql: `INSERT INTO order_items (order_id, product_id, product_name, unit_price_cents, quantity, addons)
               VALUES (?, ?, ?, ?, ?, ?)`,

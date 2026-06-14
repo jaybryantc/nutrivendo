@@ -20,8 +20,11 @@ function loadEnvFile(file: string) {
   }
 }
 
+// Load .env.local first so local dev settings (e.g. file: DB) win over the
+// committed .env.example defaults — loadEnvFile only sets vars not already set.
+loadEnvFile(path.join(process.cwd(), ".env.local"));
 loadEnvFile(path.join(process.cwd(), ".env.example"));
-// loadEnvFile(path.join(process.cwd(), ".env"));
+loadEnvFile(path.join(process.cwd(), ".env"));
 
 const url = process.env.TURSO_DATABASE_URL;
 if (!url) {
@@ -44,12 +47,13 @@ const client = createClient({
 
 const statements: string[] = [
   `CREATE TABLE IF NOT EXISTS users (
-     id            TEXT PRIMARY KEY,
-     email         TEXT UNIQUE NOT NULL,
-     password_hash TEXT NOT NULL,
-     first_name    TEXT NOT NULL,
-     last_name     TEXT NOT NULL,
-     created_at    TEXT NOT NULL
+     id              TEXT PRIMARY KEY,
+     email           TEXT UNIQUE NOT NULL,
+     password_hash   TEXT NOT NULL,
+     first_name      TEXT NOT NULL,
+     last_name       TEXT NOT NULL,
+     created_at      TEXT NOT NULL,
+     welcome_discount INTEGER NOT NULL DEFAULT 0
    )`,
   `CREATE TABLE IF NOT EXISTS orders (
      id              TEXT PRIMARY KEY,
@@ -57,6 +61,7 @@ const statements: string[] = [
      location_id     TEXT NOT NULL,
      pickup_code     TEXT NOT NULL,
      subtotal_cents  INTEGER NOT NULL,
+     discount_cents  INTEGER NOT NULL DEFAULT 0,
      status          TEXT NOT NULL,
      created_at      TEXT NOT NULL
    )`,
@@ -81,10 +86,18 @@ const statements: string[] = [
   `CREATE INDEX IF NOT EXISTS idx_subs_user_status ON subscriptions(user_id, status)`,
 ];
 
+const usersColumns: Array<{ name: string; ddl: string }> = [
+  {
+    name: "welcome_discount",
+    ddl: "welcome_discount INTEGER NOT NULL DEFAULT 0",
+  },
+];
+
 const ordersColumns: Array<{ name: string; ddl: string }> = [
   { name: "paid_with", ddl: "paid_with TEXT NOT NULL DEFAULT 'card'" },
   { name: "card_last4", ddl: "card_last4 TEXT" },
   { name: "subscription_id", ddl: "subscription_id TEXT" },
+  { name: "discount_cents", ddl: "discount_cents INTEGER NOT NULL DEFAULT 0" },
 ];
 
 const orderItemsColumns: Array<{ name: string; ddl: string }> = [
@@ -109,6 +122,7 @@ async function run() {
     await client.execute(sql);
   }
 
+  await addMissingColumns("users", usersColumns);
   await addMissingColumns("orders", ordersColumns);
   await addMissingColumns("order_items", orderItemsColumns);
 

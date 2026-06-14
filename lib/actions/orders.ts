@@ -6,6 +6,7 @@ import { getCurrentUser } from "@/lib/auth";
 import {
   getActiveSubscription,
   getPlanUsageThisMonth,
+  getUserById,
   insertOrderTxn,
 } from "@/lib/db";
 import { getPlan, locations, products, getAddOn, sumAddOns } from "@/lib/data";
@@ -168,6 +169,18 @@ export async function placeOrderAction(
     card_last4 = v.last4;
   }
 
+  // One-time welcome discount — 20% off the single most expensive drink (one
+  // unit, even if its quantity > 1). Card orders only: a plan order already
+  // costs $0, so it leaves the discount untouched for a later card order.
+  let discountCents = 0;
+  if (paid_with === "card") {
+    const account = await getUserById(user.id);
+    if (account?.welcome_discount === 1) {
+      const maxUnitCents = Math.max(...items.map((i) => i.unit_price_cents));
+      discountCents = Math.round(maxUnitCents * 0.2);
+    }
+  }
+
   const orderId = crypto.randomUUID();
   await insertOrderTxn(
     {
@@ -176,6 +189,7 @@ export async function placeOrderAction(
       location_id: location.id,
       pickup_code: generatePickupCode(),
       subtotal_cents: subtotalCents,
+      discount_cents: discountCents,
       status: "placed",
       created_at: new Date().toISOString(),
       paid_with,

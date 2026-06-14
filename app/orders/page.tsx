@@ -84,7 +84,7 @@ export default async function OrdersPage() {
                     </div>
                     <div className="text-right">
                       <p className="text-lg font-semibold">
-                        ${(o.subtotal_cents / 100).toFixed(2)}
+                        ${(((o.subtotal_cents - o.discount_cents) * 1.13) / 100).toFixed(2)}
                       </p>
                       <span className="mt-1 inline-flex rounded-full bg-secondary-container px-2.5 py-1 text-[11px] font-medium text-on-secondary-container capitalize">
                         {o.status}

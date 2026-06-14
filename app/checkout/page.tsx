@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { Container, Section, Eyebrow } from "@/components/ui";
 import CheckoutForm from "./checkout-form";
 import { getCurrentUser } from "@/lib/auth";
-import { getActiveSubscription, getPlanUsageThisMonth } from "@/lib/db";
+import { getActiveSubscription, getPlanUsageThisMonth, getUserById } from "@/lib/db";
 import { getPlan } from "@/lib/data";
 
 export const metadata = { title: "Checkout" };
@@ -15,6 +15,9 @@ export default async function CheckoutPage() {
   const planMeta = sub ? getPlan(sub.plan_id) : null;
   const used = sub ? await getPlanUsageThisMonth(user.id) : 0;
   const remaining = planMeta ? Math.max(0, planMeta.monthlyQuota - used) : 0;
+
+  const account = await getUserById(user.id);
+  const welcomeDiscount = account?.welcome_discount === 1;
 
   return (
     <Section>
@@ -39,6 +42,7 @@ export default async function CheckoutPage() {
                   }
                 : null
             }
+            welcomeDiscount={welcomeDiscount}
           />
         </div>
       </Container>

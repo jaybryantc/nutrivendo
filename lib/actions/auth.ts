@@ -29,6 +29,7 @@ export async function registerAction(
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const next = safeNext(formData.get("next"), "/menu");
+  const promo = String(formData.get("promo") ?? "");
 
   if (!firstName || !lastName) {
     return { error: "Please enter your first and last name." };
@@ -46,7 +47,16 @@ export async function registerAction(
 
   const password_hash = await hashPassword(password);
   const id = crypto.randomUUID();
-  await createUser({ id, email, password_hash, first_name: firstName, last_name: lastName });
+  await createUser({
+    id,
+    email,
+    password_hash,
+    first_name: firstName,
+    last_name: lastName,
+    // Accounts that arrive via the "Claim My 20% Off" CTA get a one-time
+    // first-order discount.
+    welcome_discount: promo === "welcome20" ? 1 : 0,
+  });
 
   await setSessionCookie(id);
   revalidatePath("/", "layout");

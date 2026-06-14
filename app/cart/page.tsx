@@ -73,12 +73,12 @@ export default function CartPage() {
                 <dd className="text-on-surface-variant">${subtotal.toFixed(2)}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-on-surface-variant">Pickup fee</dt>
-                <dd className="text-on-surface-variant">$0.00</dd>
+                <dt className="text-on-surface-variant">Tax (13%)</dt>
+                <dd className="text-on-surface-variant">${(subtotal * 0.13).toFixed(2)}</dd>
               </div>
               <div className="flex justify-between border-t border-outline-variant pt-3 font-bold">
                 <dt>Total</dt>
-                <dd className="text-primary">${subtotal.toFixed(2)}</dd>
+                <dd className="text-primary">${(subtotal * 1.13).toFixed(2)}</dd>
               </div>
             </dl>
             <Link

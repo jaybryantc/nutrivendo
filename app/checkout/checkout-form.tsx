@@ -21,7 +21,13 @@ type PlanContext = {
   remaining: number;
 } | null;
 
-export default function CheckoutForm({ plan }: { plan: PlanContext }) {
+export default function CheckoutForm({
+  plan,
+  welcomeDiscount,
+}: {
+  plan: PlanContext;
+  welcomeDiscount: boolean;
+}) {
   const { lines, hydrated, subtotal, clear } = useCart();
   const [state, formAction, pending] = useActionState<CheckoutFormState, FormData>(
     placeOrderAction,
@@ -63,10 +69,24 @@ export default function CheckoutForm({ plan }: { plan: PlanContext }) {
 
   const cartSnapshot = JSON.stringify(lines);
   const effectiveMethod = planCanCover ? paymentMethod : "card";
+  // The one-time welcome discount is 20% off the single priciest drink (one
+  // unit), and only applies to card-paid orders.
+  const maxUnit = Math.max(
+    0,
+    ...lines.map((l) => {
+      const p = products.find((p) => p.id === l.productId);
+      return p ? p.price + sumAddOns(l.addOnIds) : 0;
+    })
+  );
+  const discount =
+    welcomeDiscount && effectiveMethod === "card" ? maxUnit * 0.2 : 0;
+  const net = subtotal - discount;
+  const tax = net * 0.13;
+  const total = net + tax;
   const submitLabel =
     effectiveMethod === "plan"
       ? `Pay with ${plan?.name} plan`
-      : `Pay $${subtotal.toFixed(2)}`;
+      : `Pay $${total.toFixed(2)}`;
 
   return (
     <form
@@ -288,14 +308,20 @@ export default function CheckoutForm({ plan }: { plan: PlanContext }) {
             <dt className="text-on-surface-variant">Subtotal</dt>
             <dd>${subtotal.toFixed(2)}</dd>
           </div>
+          {discount > 0 && (
+            <div className="flex justify-between text-primary">
+              <dt>First-order discount (20% off one drink)</dt>
+              <dd>−${discount.toFixed(2)}</dd>
+            </div>
+          )}
           <div className="flex justify-between">
-            <dt className="text-on-surface-variant">Pickup fee</dt>
-            <dd>$0.00</dd>
+            <dt className="text-on-surface-variant">Tax (13%)</dt>
+            <dd>${tax.toFixed(2)}</dd>
           </div>
           {effectiveMethod === "plan" && (
             <div className="flex justify-between text-primary">
               <dt>Covered by plan</dt>
-              <dd>−${subtotal.toFixed(2)}</dd>
+              <dd>−${total.toFixed(2)}</dd>
             </div>
           )}
           <div className="flex justify-between border-t border-outline-variant pt-3 font-semibold">
@@ -303,7 +329,7 @@ export default function CheckoutForm({ plan }: { plan: PlanContext }) {
             <dd>
               {effectiveMethod === "plan"
                 ? "$0.00"
-                : `$${subtotal.toFixed(2)}`}
+                : `$${total.toFixed(2)}`}
             </dd>
           </div>
         </dl>

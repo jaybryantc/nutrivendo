@@ -19,6 +19,8 @@ export default function SubscriptionPaymentForm({ plan }: { plan: PlanSummary })
     action,
     {}
   );
+  const tax = plan.monthly * 0.13;
+  const total = plan.monthly + tax;
 
   return (
     <form
@@ -29,7 +31,7 @@ export default function SubscriptionPaymentForm({ plan }: { plan: PlanSummary })
         <section>
           <h2 className="text-lg font-semibold">Card details</h2>
           <p className="mt-1 text-sm text-on-surface-variant">
-            Your card will be charged ${plan.monthly.toFixed(2)} today and each
+            Your card will be charged ${total.toFixed(2)} today and each
             month until you cancel.
           </p>
 
@@ -115,9 +117,13 @@ export default function SubscriptionPaymentForm({ plan }: { plan: PlanSummary })
             <dt className="text-on-surface-variant">Billed</dt>
             <dd>${plan.monthly.toFixed(2)} / month</dd>
           </div>
+          <div className="flex justify-between">
+            <dt className="text-on-surface-variant">Tax (13%)</dt>
+            <dd>${tax.toFixed(2)}</dd>
+          </div>
           <div className="flex justify-between border-t border-outline-variant pt-3 font-semibold">
             <dt>Due today</dt>
-            <dd>${plan.monthly.toFixed(2)}</dd>
+            <dd>${total.toFixed(2)}</dd>
           </div>
         </dl>
 
@@ -137,7 +143,7 @@ export default function SubscriptionPaymentForm({ plan }: { plan: PlanSummary })
         >
           {pending
             ? "Processing…"
-            : `Pay $${plan.monthly.toFixed(2)} & subscribe`}
+            : `Pay $${total.toFixed(2)} & subscribe`}
         </button>
         <p className="mt-3 text-center text-xs text-on-surface-variant">
           Demo — no real payment is collected.

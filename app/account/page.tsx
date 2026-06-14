@@ -210,7 +210,7 @@ export default async function AccountPage({
                       </span>
                     </span>
                     <span className="font-medium">
-                      ${(o.subtotal_cents / 100).toFixed(2)}
+                      ${((o.subtotal_cents * 1.13) / 100).toFixed(2)}
                     </span>
                   </Link>
                 </li>
