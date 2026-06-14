@@ -475,64 +475,10 @@ export function isUnlimited(quota: number): boolean {
   return quota >= ATHLETE_QUOTA;
 }
 
-export type Review = {
-  id: string;
-  name: string;
-  role: string;
-  rating: number;
-  body: string;
-};
-
-export const reviews: Review[] = [
-  {
-    id: "1",
-    name: "Maya P.",
-    role: "Software Engineer",
-    rating: 5,
-    body: "I grab a Green Machine before standup every day. Faster than my coffee order and I actually feel awake after.",
-  },
-  {
-    id: "2",
-    name: "Daniel R.",
-    role: "Personal Trainer",
-    rating: 5,
-    body: "Cacao Recovery is what I send all my clients to after sessions. Macros are honest, taste is real.",
-  },
-  {
-    id: "3",
-    name: "Priya S.",
-    role: "Grad Student",
-    rating: 4,
-    body: "The campus machine has saved me during finals more than once. Wish there was one in the library too.",
-  },
-  {
-    id: "4",
-    name: "Marcus T.",
-    role: "Product Manager",
-    rating: 5,
-    body: "Athlete plan pays for itself in two weeks. The app tells me when my favorite is restocked.",
-  },
-  {
-    id: "5",
-    name: "Elena K.",
-    role: "Yoga Instructor",
-    rating: 5,
-    body: "Cold-pressed juices that don't taste like a chore. Citrus Immunity is the move on rainy mornings.",
-  },
-  {
-    id: "6",
-    name: "Andre J.",
-    role: "Cyclist",
-    rating: 5,
-    body: "I plan rides around NutriVendo machines. The transit station drops are clutch.",
-  },
-];
-
 export const navLinks = [
   { href: "/menu", label: "Menu" },
   { href: "/locations", label: "Locations" },
   { href: "/about", label: "About" },
   { href: "/plans", label: "Plans" },
-  { href: "/reviews", label: "Reviews" },
   { href: "/contact", label: "Contact" },
 ] as const;

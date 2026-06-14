@@ -5,7 +5,6 @@ import Icon from "@/components/icon";
 import {
   products,
   locations,
-  reviews,
   plans,
   isUnlimited,
   getPlan,
@@ -460,48 +459,6 @@ export default async function HomePage() {
         </Container>
       </Section>
 
-      {/* ───────────── Reviews ───────────── */}
-      <Section className="bg-surface-container-low">
-        <Container>
-          <Reveal>
-            <div className="mx-auto max-w-2xl text-center">
-              <div className="inline-flex items-center justify-center gap-2 rounded-full bg-secondary-container px-4 py-1.5 text-xs font-medium text-on-secondary-container">
-                <Stars n={5} />
-                4.9 / 5 · 2,300+ reviews
-              </div>
-              <h2 className="mt-5 text-3xl font-bold tracking-tight sm:text-4xl">
-                Loved by daily sippers.
-              </h2>
-            </div>
-          </Reveal>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {reviews.slice(0, 3).map((r, i) => (
-              <Reveal key={r.id} delay={i * 80}>
-                <Card className="nv-review-card flex h-full flex-col">
-                  <Icon name="format_quote" size={32} filled className="text-primary/30 -ml-1" />
-                  <Stars n={r.rating} />
-                  <p className="mt-4 text-sm leading-relaxed text-on-surface">
-                    {r.body}
-                  </p>
-                  <div className="mt-auto flex items-center gap-3 pt-6">
-                    <div
-                      aria-hidden
-                      className="grid h-10 w-10 place-items-center rounded-full bg-primary-container text-sm font-semibold text-on-primary-container"
-                    >
-                      {r.name.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">{r.name}</p>
-                      <p className="text-xs text-on-surface-variant">{r.role}</p>
-                    </div>
-                  </div>
-                </Card>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </Section>
-
       {/* ───────────── Final CTA ───────────── */}
       <Section className="pb-24">
         <Container>
@@ -533,22 +490,6 @@ export default async function HomePage() {
         </Container>
       </Section>
     </>
-  );
-}
-
-function Stars({ n }: { n: number }) {
-  return (
-    <div className="inline-flex gap-0.5 text-primary" aria-hidden>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <Icon
-          key={i}
-          name="star"
-          size={16}
-          filled
-          className={i < n ? "" : "opacity-20"}
-        />
-      ))}
-    </div>
   );
 }
 

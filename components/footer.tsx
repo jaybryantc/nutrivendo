@@ -9,7 +9,6 @@ const columns = [
       { href: "/menu", label: "Menu" },
       { href: "/locations", label: "Locations" },
       { href: "/plans", label: "Plans" },
-      { href: "/reviews", label: "Reviews" },
     ],
   },
   {

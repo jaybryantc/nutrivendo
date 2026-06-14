@@ -1,34 +1,11 @@
 import { Container, Section, Eyebrow, Card } from "@/components/ui";
 import Icon from "@/components/icon";
 
-const milestones = [
-  {
-    year: "2021",
-    title: "Two coolers in one gym",
-    body: "Founders Jess and Marco placed the first prototype in a Kensington Market gym after months of blending in their kitchen.",
-  },
-  {
-    year: "2022",
-    title: "The first smart machine",
-    body: "We built our own touchscreen, payment, and inventory stack. The drinks stopped running out at 4pm.",
-  },
-  {
-    year: "2024",
-    title: "Across the city",
-    body: "4 machines across Toronto — from gyms to transit hubs to campus. Same recipe ethos: real ingredients, no shortcuts.",
-  },
-  {
-    year: "2026",
-    title: "You're reading this",
-    body: "We're rolling out membership plans, custom blends, and partnerships with local growers.",
-  },
-];
-
 const team = [
-  { name: "Jess Okonkwo", role: "Co-founder & CEO", initials: "JO" },
-  { name: "Marco Reyes", role: "Co-founder & CTO", initials: "MR" },
-  { name: "Aisha Patel", role: "Head of Nutrition", initials: "AP" },
-  { name: "Devon Lee", role: "Head of Operations", initials: "DL" },
+  { name: "Janine Mae Adovo", role: "Founder / CEO", initials: "JA" },
+  { name: "Jonathan Abulencia", role: "Marketing Lead", initials: "JA" },
+  { name: "Jessa Faye Casilang", role: "Operations Lead", initials: "JC" },
+  { name: "Julius Abulencia", role: "Product & Technology Lead", initials: "JA" },
 ];
 
 export default function AboutPage() {
@@ -38,12 +15,12 @@ export default function AboutPage() {
         <Container>
           <Eyebrow>About NutriVendo</Eyebrow>
           <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl max-w-3xl">
-            We started NutriVendo because the only fast drink shouldn't be soda.
+            Smart Vending. Healthier Lives.
           </h1>
           <p className="mt-6 text-lg text-on-surface-variant max-w-2xl">
-            We build smart vending machines that blend, pour, and serve fresh
-            smoothies, shakes, and juices — using whole ingredients, in 60
-            seconds, in the places you spend your day.
+            NutriVendo makes fresh smoothies, protein shakes, detox juices, and
+            wellness drinks more accessible through smart vending technology
+            designed for busy, health-conscious lifestyles.
           </p>
         </Container>
       </Section>
@@ -85,22 +62,32 @@ export default function AboutPage() {
 
       <Section className="bg-surface-container-low">
         <Container>
-          <div className="max-w-2xl">
-            <Eyebrow>Our story</Eyebrow>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-              From two coolers to across Toronto.
-            </h2>
-          </div>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {milestones.map((m) => (
-              <Card key={m.year}>
-                <span className="inline-flex rounded-full bg-secondary-container px-3 py-1 text-xs font-medium text-on-secondary-container">
-                  {m.year}
-                </span>
-                <h3 className="mt-3 font-semibold tracking-tight">{m.title}</h3>
-                <p className="mt-2 text-sm text-on-surface-variant">{m.body}</p>
-              </Card>
-            ))}
+          <div className="grid gap-8 lg:grid-cols-2 lg:gap-16 lg:items-center">
+            <div>
+              <Eyebrow>Our story</Eyebrow>
+              <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
+                Inspired by Healthy Living
+              </h2>
+            </div>
+            <div className="space-y-4 text-lg text-on-surface-variant">
+              <p>
+                NutriVendo began with a personal love for smoothies and healthy
+                drinks. Growing up, I was inspired by my parents, who often made
+                their own smoothies and detox juices at home using simple, fresh
+                ingredients. Their habit of choosing healthier drinks showed me
+                how small daily choices can support a better lifestyle.
+              </p>
+              <p>
+                That inspiration led to the idea of creating a smarter way for
+                people to enjoy healthy beverages even when they are busy.
+                NutriVendo was built from that idea — bringing the comfort of
+                homemade wellness into a modern, on-the-go experience.
+              </p>
+              <p>
+                What started as a family-inspired habit became a fresh idea for
+                everyday convenience.
+              </p>
+            </div>
           </div>
         </Container>
       </Section>
