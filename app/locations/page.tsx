@@ -94,6 +94,7 @@ export default function LocationsPage() {
                   location={l}
                   active={activeId === l.id}
                   onHover={(hovered) => setActiveId(hovered ? l.id : null)}
+                  onSelect={() => setActiveId(l.id)}
                 />
               ))}
             </div>
@@ -107,7 +108,7 @@ export default function LocationsPage() {
                 const el = document.getElementById(`loc-${id}`);
                 el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
               }}
-              className="order-1 h-[55vh] min-h-[320px] lg:order-2 lg:h-full lg:min-h-0"
+              className="order-1 sticky top-16 z-10 h-[38.5vh] min-h-[224px] lg:static lg:z-auto lg:order-2 lg:h-full lg:min-h-0"
             />
           </div>
         </Container>
@@ -120,18 +121,30 @@ function LocationCard({
   location: l,
   active,
   onHover,
+  onSelect,
 }: {
   location: Location;
   active: boolean;
   onHover: (hovered: boolean) => void;
+  onSelect: () => void;
 }) {
   return (
     <div
       id={`loc-${l.id}`}
+      role="button"
+      tabIndex={0}
+      aria-pressed={active}
+      onClick={onSelect}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSelect();
+        }
+      }}
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
       className={cn(
-        "product-card-shadow rounded-xl bg-surface-container-lowest p-5 transition-all",
+        "product-card-shadow cursor-pointer rounded-xl bg-surface-container-lowest p-5 transition-all",
         active && "ring-2 ring-primary/30"
       )}
     >
@@ -165,6 +178,7 @@ function LocationCard({
           href={`https://www.google.com/maps/dir/?api=1&destination=${l.lat},${l.lng}`}
           target="_blank"
           rel="noreferrer"
+          onClick={(e) => e.stopPropagation()}
           className="text-sm font-medium text-primary hover:underline"
         >
           Get directions →

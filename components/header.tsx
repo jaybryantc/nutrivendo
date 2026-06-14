@@ -88,10 +88,9 @@ export default function Header({ user }: { user: CurrentUser | null }) {
         </div>
 
         {/* Phones: navigation lives in the fixed bottom bar (see BottomNav). */}
-        <div className="md:hidden flex items-center">
-          {user ? (
-            <CartIcon />
-          ) : (
+        <div className="md:hidden flex items-center gap-2">
+          <CartIcon />
+          {!user && (
             <Link
               href="/login"
               className="focus-ring rounded-full px-3 py-1 text-sm font-medium text-foreground/70 hover:text-foreground"
