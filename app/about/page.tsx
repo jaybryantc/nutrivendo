@@ -2,10 +2,10 @@ import { Container, Section, Eyebrow, Card } from "@/components/ui";
 import Icon from "@/components/icon";
 
 const team = [
-  { name: "Janine Mae Adovo", role: "Founder / CEO", initials: "JA" },
+  { name: "Janine Mae Adovo", role: "Founder / CEO", initials: "JM" },
   { name: "Jonathan Abulencia", role: "Marketing Lead", initials: "JA" },
-  { name: "Jessa Faye Casilang", role: "Operations Lead", initials: "JC" },
-  { name: "Julius Abulencia", role: "Product & Technology Lead", initials: "JA" },
+  { name: "Joyce Ivana Cerenio", role: "Operations Lead", initials: "JI" },
+  { name: "Jessa Faye Casilang", role: "Product & Technology Lead", initials: "JC" },
 ];
 
 export default function AboutPage() {
