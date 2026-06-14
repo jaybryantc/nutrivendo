@@ -89,8 +89,7 @@ export default function ContactPage() {
                   </div>
                   <h3 className="font-semibold tracking-tight">Email</h3>
                 </div>
-                <p className="mt-3 text-sm text-on-surface-variant">hi@nutrivendo.example</p>
-                <p className="text-sm text-on-surface-variant">press@nutrivendo.example</p>
+                <p className="mt-3 text-sm text-on-surface-variant">hello@nutrivendo.com</p>
               </Card>
               <Card>
                 <div className="flex items-center gap-3">
